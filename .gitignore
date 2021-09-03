@@ -1,0 +1,22 @@
+*.pyc
+.cache-*
+.caches*
+.config.yml
+*.egg-info/
+.env
+
+.eggs/*
+venv/*
+dist/*
+build/*
+
+# garbagge created by me
+tmp/*
+
+# code coverage
+.coverage
+coverage.xml
+htmlcov/*
+
+# docs
+docs/_build/*
