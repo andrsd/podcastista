@@ -31,8 +31,8 @@ class ShowsTab(QtWidgets.QWidget):
         self.setLayout(layout)
 
     def fillShows(self):
-        self._shows.addItem("Podcast 1")
-        self._shows.addItem("Podcast 2")
+        pass
 
     def onItemClicked(self, item):
-        self._main_window.viewShow(item.text())
+        show = item.data(QtCore.Qt.UserRole)
+        self._main_window.viewShow(show)

@@ -11,6 +11,7 @@ from podcastista.assets import Assets
 from podcastista.AboutDialog import AboutDialog
 from podcastista.EpisodesListTab import EpisodesListTab
 from podcastista.ShowsTab import ShowsTab
+from podcastista.SearchTab import SearchTab
 from podcastista.ShowDetails import ShowDetails
 
 
@@ -52,6 +53,7 @@ class MainWindow(QtWidgets.QMainWindow):
         self._tabs = None
         self._episodes_tab = None
         self._shows_tab = None
+        self._search_box = None
         self._show = None
 
         server.signaler.connectToSpotify.connect(self.setupSpotify)
@@ -75,9 +77,11 @@ class MainWindow(QtWidgets.QMainWindow):
 
         self._episodes_tab = EpisodesListTab(self)
         self._shows_tab = ShowsTab(self)
+        self._search_box = SearchTab(self)
 
         self._tabs.addTab(self._episodes_tab, "Episodes")
         self._tabs.addTab(self._shows_tab, "Shows")
+        self._tabs.addTab(self._search_box, "Search")
 
         #
         self._show = ShowDetails(self)
@@ -266,6 +270,10 @@ class MainWindow(QtWidgets.QMainWindow):
         self._tabs.setCurrentIndex(active_tab)
         self._settings.endGroup()
 
+    @property
+    def spotify(self):
+        return self._spotify
+
     def connectToSpotify(self):
         """
         Connect to Spotify via our local HTTP server
@@ -334,10 +342,13 @@ class MainWindow(QtWidgets.QMainWindow):
         self._stacked_layout.setCurrentWidget(self._tabs)
         self._tabs.setCurrentWidget(self._shows_tab)
 
-    def viewShow(self, param):
+    def viewShow(self, show):
         """
         Display "Show details"
+
+        @param show Show data object from spotify
         """
+        self._show.setShow(show)
         self._stacked_layout.setCurrentWidget(self._show)
 
     def viewMain(self):
