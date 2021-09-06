@@ -9,11 +9,12 @@ from PyQt5 import QtWidgets, QtCore, QtNetwork, QtGui
 from podcastista import server
 from podcastista.assets import Assets
 from podcastista.AboutDialog import AboutDialog
+from podcastista.EpisodesListTab import EpisodesListTab
+from podcastista.ShowsTab import ShowsTab
+from podcastista.ShowDetails import ShowDetails
 
-if platform.system() == "Darwin":
-    WINDOW_TITLE = "Player"
-else:
-    WINDOW_TITLE = "Podcastista"
+
+WINDOW_TITLE = "Podcastista"
 
 
 class MainWindow(QtWidgets.QMainWindow):
@@ -48,14 +49,19 @@ class MainWindow(QtWidgets.QMainWindow):
         self._about_dlg = None
         self._window_menu = None
 
+        self._tabs = None
+        self._episodes_tab = None
+        self._shows_tab = None
+        self._show = None
+
         server.signaler.connectToSpotify.connect(self.setupSpotify)
 
         self._nam = QtNetwork.QNetworkAccessManager()
         self._nam.finished.connect(self.onNetworkReply)
 
+        self.setupWidgets()
         self.readSettings()
         self.setWindowTitle(WINDOW_TITLE)
-        self.setupWidgets()
         self.setupMenuBar()
         self.updateMenuBar()
 
@@ -63,10 +69,25 @@ class MainWindow(QtWidgets.QMainWindow):
         """
         Setup widgets
         """
-        w = QtWidgets.QWidget(self)
-        w.setContentsMargins(0, 0, 0, 0)
+        #
+        self._tabs = QtWidgets.QTabWidget(self)
+        self._tabs.setDocumentMode(True)
 
-        # w.setLayout(h_layout)
+        self._episodes_tab = EpisodesListTab(self)
+        self._shows_tab = ShowsTab(self)
+
+        self._tabs.addTab(self._episodes_tab, "Episodes")
+        self._tabs.addTab(self._shows_tab, "Shows")
+
+        #
+        self._show = ShowDetails(self)
+
+        self._stacked_layout = QtWidgets.QStackedLayout()
+        self._stacked_layout.addWidget(self._tabs)
+        self._stacked_layout.addWidget(self._show)
+
+        w = QtWidgets.QWidget()
+        w.setLayout(self._stacked_layout)
         self.setCentralWidget(w)
 
     def setupMenuBar(self):
@@ -83,6 +104,12 @@ class MainWindow(QtWidgets.QMainWindow):
         self._file_menu.addSeparator()
         self._about_box_action = self._file_menu.addAction(
             "About...", self.onAbout)
+
+        self._view_menu = self._menubar.addMenu("View")
+        self._view_episodes = self._view_menu.addAction(
+            "Episodes", self.onViewEpisodes, "Ctrl+1")
+        self._view_shows = self._view_menu.addAction(
+            "Shows", self.onViewShows, "Ctrl+2")
 
         self._controls_menu = self._menubar.addMenu("Controls")
         self._play_pause = self._controls_menu.addAction(
@@ -216,6 +243,7 @@ class MainWindow(QtWidgets.QMainWindow):
         """
         self._settings.beginGroup("MainWindow")
         self._settings.setValue("geometry", self.saveGeometry())
+        self._settings.setValue("active_tab", self._tabs.currentIndex())
         self._settings.endGroup()
 
     def readSettings(self):
@@ -234,6 +262,8 @@ class MainWindow(QtWidgets.QMainWindow):
             pass
         else:
             self.restoreGeometry(geom)
+        active_tab = self._settings.value("active_tab", 0)
+        self._tabs.setCurrentIndex(active_tab)
         self._settings.endGroup()
 
     def connectToSpotify(self):
@@ -295,3 +325,23 @@ class MainWindow(QtWidgets.QMainWindow):
         layout.addItem(
             horizontalSpacer, layout.rowCount(), 0, 1, layout.columnCount())
         mb.exec()
+
+    def onViewEpisodes(self):
+        self._stacked_layout.setCurrentWidget(self._tabs)
+        self._tabs.setCurrentWidget(self._episodes_tab)
+
+    def onViewShows(self):
+        self._stacked_layout.setCurrentWidget(self._tabs)
+        self._tabs.setCurrentWidget(self._shows_tab)
+
+    def viewShow(self, param):
+        """
+        Display "Show details"
+        """
+        self._stacked_layout.setCurrentWidget(self._show)
+
+    def viewMain(self):
+        """
+        Show tabs with "episodes/show"
+        """
+        self._stacked_layout.setCurrentWidget(self._tabs)
