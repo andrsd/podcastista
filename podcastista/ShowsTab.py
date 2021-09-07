@@ -1,5 +1,6 @@
 from PyQt5 import QtWidgets, QtCore
 from podcastista.ShowWidget import ShowWidget
+from podcastista.FlowLayout import FlowLayout
 
 class ShowsTab(QtWidgets.QScrollArea):
     """
@@ -10,7 +11,7 @@ class ShowsTab(QtWidgets.QScrollArea):
         super().__init__()
         self._main_window = parent
 
-        self._layout = QtWidgets.QVBoxLayout(self)
+        self._layout = FlowLayout(self)
 
         widget = QtWidgets.QWidget()
         widget.setLayout(self._layout)
@@ -31,4 +32,3 @@ class ShowsTab(QtWidgets.QScrollArea):
             show = item['show']
             w = ShowWidget(show, self._main_window)
             self._layout.addWidget(w)
-        self._layout.addStretch()
