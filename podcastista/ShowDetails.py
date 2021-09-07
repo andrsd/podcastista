@@ -2,7 +2,7 @@ from PyQt5 import QtWidgets, QtCore, QtNetwork, QtGui
 from podcastista.assets import Assets
 
 
-class ShowDetails(QtWidgets.QWidget):
+class ShowDetails(QtWidgets.QScrollArea):
     """
     Widget on main window with show details
     """
@@ -14,40 +14,30 @@ class ShowDetails(QtWidgets.QWidget):
         super().__init__()
         self._main_window = parent
         self._show = None
-        self.setupWidgets()
         self._follow_button = None
 
-    def setupWidgets(self):
-        sa_layout = QtWidgets.QVBoxLayout(self)
-
-        self._w = QtWidgets.QWidget()
-        self._w.setLayout(sa_layout)
-        self._w.setSizePolicy(
+        self._layout = QtWidgets.QVBoxLayout(self)
+        widget = QtWidgets.QWidget()
+        widget.setLayout(self._layout)
+        widget.setSizePolicy(
             QtWidgets.QSizePolicy.MinimumExpanding,
             QtWidgets.QSizePolicy.MinimumExpanding)
 
-        scroll_area = QtWidgets.QScrollArea()
-        scroll_area.setFrameShape(QtWidgets.QFrame.NoFrame)
-        scroll_area.setWidgetResizable(True)
-        scroll_area.setWidget(self._w)
-
-        layout = QtWidgets.QVBoxLayout(self)
-        layout.addWidget(scroll_area)
-
-        self.setLayout(layout)
+        self.setFrameShape(QtWidgets.QFrame.NoFrame)
+        self.setWidgetResizable(True)
+        self.setWidget(widget)
 
     def setShow(self, show_id):
         self._show = self._main_window.spotify.show(show_id)
 
-        sa_layout = self._w.layout()
-        while sa_layout.count() > 0:
-            item = sa_layout.takeAt(0)
+        while self._layout.count() > 0:
+            item = self._layout.takeAt(0)
             if item.widget() is not None:
                 item.widget().deleteLater()
 
         self._back = QtWidgets.QPushButton("Back")
         self._back.clicked.connect(self.onBack)
-        sa_layout.addWidget(self._back)
+        self._layout.addWidget(self._back)
 
         banner_h_layout = QtWidgets.QHBoxLayout()
         banner_h_layout.setContentsMargins(0, 0, 0, 0)
@@ -99,25 +89,25 @@ class ShowDetails(QtWidgets.QWidget):
             QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Fixed)
         banner.setFixedHeight(self.ARTWORK_HT)
         banner.setLayout(banner_h_layout)
-        sa_layout.addWidget(banner)
+        self._layout.addWidget(banner)
 
         hbar = QtWidgets.QFrame()
         hbar.setFrameShape(QtWidgets.QFrame.HLine)
         hbar.setFrameShadow(QtWidgets.QFrame.Plain)
-        sa_layout.addWidget(hbar)
+        self._layout.addWidget(hbar)
 
         self._episodes_label = QtWidgets.QLabel("Episodes")
         font = self._episodes_label.font()
         font.setBold(True)
         font.setPointSizeF(font.pointSize() * 1.5)
         self._episodes_label.setFont(font)
-        sa_layout.addWidget(self._episodes_label)
+        self._layout.addWidget(self._episodes_label)
 
         for episode in self._show['episodes']['items']:
             label = QtWidgets.QLabel(episode['name'])
-            sa_layout.addWidget(label)
+            self._layout.addWidget(label)
 
-        sa_layout.addStretch()
+        self._layout.addStretch()
 
     def onBack(self, item):
         self._main_window.viewMain()
