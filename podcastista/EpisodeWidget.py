@@ -30,6 +30,7 @@ class EpisodeWidget(QtWidgets.QWidget):
         font = self._date.font()
         font.setBold(True)
         self._date.setFont(font)
+        self._date.setStyleSheet("color: #888")
         left_layout.addWidget(self._date)
 
         left_layout.addSpacing(2)
@@ -52,6 +53,7 @@ class EpisodeWidget(QtWidgets.QWidget):
         self._description.setMaximumHeight(self.DESCRIPTION_HT)
         self._description.setAlignment(
             QtCore.Qt.AlignLeft | QtCore.Qt.AlignTop)
+        self._description.setStyleSheet("color: #888")
         left_layout.addWidget(self._description)
 
         left_layout.addStretch()

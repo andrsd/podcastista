@@ -8,8 +8,8 @@ class ShowDetails(QtWidgets.QScrollArea):
     Widget on main window with show details
     """
 
-    ARTWORK_WD = 192
-    ARTWORK_HT = 192
+    ARTWORK_WD = 200
+    ARTWORK_HT = 200
 
     def __init__(self, parent):
         super().__init__()
@@ -21,8 +21,8 @@ class ShowDetails(QtWidgets.QScrollArea):
         widget = QtWidgets.QWidget()
         widget.setLayout(self._layout)
         widget.setSizePolicy(
-            QtWidgets.QSizePolicy.MinimumExpanding,
-            QtWidgets.QSizePolicy.MinimumExpanding)
+            QtWidgets.QSizePolicy.Expanding,
+            QtWidgets.QSizePolicy.Expanding)
 
         self.setFrameShape(QtWidgets.QFrame.NoFrame)
         self.setWidgetResizable(True)
@@ -52,14 +52,22 @@ class ShowDetails(QtWidgets.QScrollArea):
         images = self._show['images']
         img_url = None
         for img in images:
-            if (img['height'] >= self.ARTWORK_HT and img['height'] <= 600):
+            if (img['height'] >= self.ARTWORK_HT and img['height'] <= 300):
                 img_url = img['url']
         self._img = Assets().get(img_url)
         self._img.image_loaded.connect(self.onImageLoaded)
 
         banner_right_layout = QtWidgets.QVBoxLayout()
+        banner_right_layout.setSpacing(2)
+
+        banner_right_layout.addStretch()
 
         self._show_title = QtWidgets.QLabel(self._show['name'])
+        self._show_title.setAlignment(
+            QtCore.Qt.AlignLeft | QtCore.Qt.AlignTop)
+        self._show_title.setWordWrap(True)
+        self._show_title.setSizePolicy(
+            QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Expanding)
         font = self._show_title.font()
         font.setBold(True)
         font.setPointSizeF(font.pointSize() * 2)
@@ -67,28 +75,34 @@ class ShowDetails(QtWidgets.QScrollArea):
         banner_right_layout.addWidget(self._show_title)
 
         self._show_author = QtWidgets.QLabel(self._show['publisher'])
+        self._show_author.setSizePolicy(
+            QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Fixed)
+        self._show_author.setFixedHeight(20)
         font = self._show_author.font()
         font.setBold(True)
         font.setPointSizeF(font.pointSize() * 1.2)
         self._show_author.setFont(font)
         banner_right_layout.addWidget(self._show_author)
 
-        self._show_description = QtWidgets.QLabel(self._show['description'])
-        banner_right_layout.addWidget(self._show_description)
+        # self._show_description = QtWidgets.QLabel(self._show['description'])
+        # self._show_description.setAlignment(
+        #     QtCore.Qt.AlignLeft | QtCore.Qt.AlignTop)
+        # self._show_description.setSizePolicy(
+        #     QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Expanding)
+        # banner_right_layout.addWidget(self._show_description)
 
-        banner_right_layout.addStretch()
+        # banner_right_layout.addStretch()
 
-        self._follow_button = QtWidgets.QPushButton("Follow")
-        self._follow_button.clicked.connect(self.onFollow)
-        banner_right_layout.addWidget(self._follow_button)
-        self.updateFollowButton()
+        # self._follow_button = QtWidgets.QPushButton("Follow")
+        # self._follow_button.clicked.connect(self.onFollow)
+        # banner_right_layout.addWidget(self._follow_button)
+        # self.updateFollowButton()
 
         banner_h_layout.addLayout(banner_right_layout)
 
         banner = QtWidgets.QWidget()
         banner.setSizePolicy(
-            QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Fixed)
-        banner.setFixedHeight(self.ARTWORK_HT)
+            QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Expanding)
         banner.setLayout(banner_h_layout)
         self._layout.addWidget(banner)
 
