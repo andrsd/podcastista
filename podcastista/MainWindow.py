@@ -94,6 +94,9 @@ class MainWindow(QtWidgets.QMainWindow):
         w.setLayout(self._stacked_layout)
         self.setCentralWidget(w)
 
+        self.setMinimumWidth(780)
+        self.setMinimumHeight(480)
+
     def setupMenuBar(self):
         """
         Setup menu bar
