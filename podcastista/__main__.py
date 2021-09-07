@@ -5,6 +5,7 @@ Podcastista
 import sys
 import signal
 from podcastista import consts
+from podcastista import colors
 from podcastista import server
 
 from PyQt5 import QtWidgets, QtCore
@@ -43,6 +44,8 @@ def main():
 
     qapp = QtWidgets.QApplication(sys.argv)
     qapp.setAttribute(QtCore.Qt.AA_UseHighDpiPixmaps)
+    palette = colors.create_palette()
+    qapp.setPalette(palette)
     qapp.setQuitOnLastWindowClosed(True)
 
     server_thread = server.ServerThread()
