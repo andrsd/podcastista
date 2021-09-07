@@ -358,3 +358,7 @@ class MainWindow(QtWidgets.QMainWindow):
         Show tabs with "episodes/show"
         """
         self._stacked_layout.setCurrentWidget(self._tabs)
+
+    def followShow(self, show_id):
+        # TODO
+        pass

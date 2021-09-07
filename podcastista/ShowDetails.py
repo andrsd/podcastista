@@ -12,6 +12,7 @@ class ShowDetails(QtWidgets.QWidget):
     def __init__(self, parent):
         super().__init__()
         self._main_window = parent
+        self._show = None
         self.setupWidgets()
         self._follow_button = None
 
@@ -38,7 +39,7 @@ class ShowDetails(QtWidgets.QWidget):
         self.setLayout(layout)
 
     def setShow(self, show_id):
-        show = self._main_window.spotify.show(show_id)
+        self._show = self._main_window.spotify.show(show_id)
 
         sa_layout = self._w.layout()
         while sa_layout.count() > 0:
@@ -59,7 +60,7 @@ class ShowDetails(QtWidgets.QWidget):
         self._show_artwork.setFixedSize(self.ARTWORK_WD, self.ARTWORK_HT)
         banner_h_layout.addWidget(self._show_artwork)
 
-        images = show['images']
+        images = self._show['images']
         img_url = None
         for img in images:
             if (img['height'] >= self.ARTWORK_HT and img['height'] <= 600):
@@ -69,21 +70,21 @@ class ShowDetails(QtWidgets.QWidget):
 
         banner_right_layout = QtWidgets.QVBoxLayout()
 
-        self._show_title = QtWidgets.QLabel(show['name'])
+        self._show_title = QtWidgets.QLabel(self._show['name'])
         font = self._show_title.font()
         font.setBold(True)
         font.setPointSizeF(font.pointSize() * 2)
         self._show_title.setFont(font)
         banner_right_layout.addWidget(self._show_title)
 
-        self._show_author = QtWidgets.QLabel(show['publisher'])
+        self._show_author = QtWidgets.QLabel(self._show['publisher'])
         font = self._show_author.font()
         font.setBold(True)
         font.setPointSizeF(font.pointSize() * 1.2)
         self._show_author.setFont(font)
         banner_right_layout.addWidget(self._show_author)
 
-        self._show_description = QtWidgets.QLabel(show['description'])
+        self._show_description = QtWidgets.QLabel(self._show['description'])
         banner_right_layout.addWidget(self._show_description)
 
         banner_right_layout.addStretch()
@@ -91,6 +92,7 @@ class ShowDetails(QtWidgets.QWidget):
         self._follow_button = QtWidgets.QPushButton("Follow")
         self._follow_button.clicked.connect(self.onFollow)
         banner_right_layout.addWidget(self._follow_button)
+        self.updateFollowButton()
 
         banner_h_layout.addLayout(banner_right_layout)
 
@@ -113,7 +115,7 @@ class ShowDetails(QtWidgets.QWidget):
         self._episodes_label.setFont(font)
         sa_layout.addWidget(self._episodes_label)
 
-        for episode in show['episodes']['items']:
+        for episode in self._show['episodes']['items']:
             label = QtWidgets.QLabel(episode['name'])
             sa_layout.addWidget(label)
 
@@ -137,4 +139,8 @@ class ShowDetails(QtWidgets.QWidget):
         self._main_window.viewMain()
 
     def onFollow(self):
-        pass
+        self._main_window.followShow(self._show['id'])
+        self.updateFollowButton()
+
+    def updateFollowButton(self):
+        self._follow_button.setEnabled(False)
