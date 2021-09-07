@@ -1,5 +1,5 @@
 from PyQt5 import QtWidgets, QtGui, QtCore
-
+from podcastista.assets import Assets
 
 class ShowWidget(QtWidgets.QWidget):
 
@@ -24,6 +24,14 @@ class ShowWidget(QtWidgets.QWidget):
         self._artwork.setFixedSize(self.ARTWORK_WD, self.ARTWORK_HT)
         self._artwork.setStyleSheet("border: 1px solid #fff")
         self._layout.addWidget(self._artwork)
+
+        images = self._show['images']
+        img_url = None
+        for img in images:
+            if (img['height'] >= self.ARTWORK_HT and img['height'] <= 600):
+                img_url = img['url']
+        self._img = Assets().get(img_url)
+        self._img.image_loaded.connect(self.onImageLoaded)
 
         self._layout.addSpacing(4)
 
@@ -54,3 +62,8 @@ class ShowWidget(QtWidgets.QWidget):
 
     def onClicked(self):
         self._main_window.viewShow(self._show['id'])
+
+    def onImageLoaded(self):
+        scaled_img = self._img.scaledToWidth(self.ARTWORK_WD)
+        pixmap = QtGui.QPixmap.fromImage(scaled_img)
+        self._artwork.setPixmap(pixmap)

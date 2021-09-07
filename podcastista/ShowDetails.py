@@ -1,4 +1,5 @@
 from PyQt5 import QtWidgets, QtCore, QtNetwork, QtGui
+from podcastista.assets import Assets
 
 
 class ShowDetails(QtWidgets.QWidget):
@@ -15,9 +16,6 @@ class ShowDetails(QtWidgets.QWidget):
         self._show = None
         self.setupWidgets()
         self._follow_button = None
-
-        self._nam = QtNetwork.QNetworkAccessManager()
-        self._nam.finished.connect(self.onNetworkReply)
 
     def setupWidgets(self):
         sa_layout = QtWidgets.QVBoxLayout(self)
@@ -65,8 +63,8 @@ class ShowDetails(QtWidgets.QWidget):
         for img in images:
             if (img['height'] >= self.ARTWORK_HT and img['height'] <= 600):
                 img_url = img['url']
-        img_req = QtNetwork.QNetworkRequest(QtCore.QUrl(img_url))
-        self._nam.get(img_req)
+        self._img = Assets().get(img_url)
+        self._img.image_loaded.connect(self.onImageLoaded)
 
         banner_right_layout = QtWidgets.QVBoxLayout()
 
@@ -121,20 +119,6 @@ class ShowDetails(QtWidgets.QWidget):
 
         sa_layout.addStretch()
 
-    def onNetworkReply(self, reply):
-        """
-        Called when network request was finished
-        """
-        if reply.url().host() == "localhost":
-            # our own requests
-            return
-        else:
-            img = QtGui.QImage()
-            img.load(reply, "")
-            scaled_img = img.scaledToWidth(self.ARTWORK_WD)
-            pixmap = QtGui.QPixmap.fromImage(scaled_img)
-            self._show_artwork.setPixmap(pixmap)
-
     def onBack(self, item):
         self._main_window.viewMain()
 
@@ -144,3 +128,8 @@ class ShowDetails(QtWidgets.QWidget):
 
     def updateFollowButton(self):
         self._follow_button.setEnabled(False)
+
+    def onImageLoaded(self):
+        scaled_img = self._img.scaledToWidth(self.ARTWORK_WD)
+        pixmap = QtGui.QPixmap.fromImage(scaled_img)
+        self._show_artwork.setPixmap(pixmap)
