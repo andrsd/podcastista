@@ -301,6 +301,8 @@ class MainWindow(QtWidgets.QMainWindow):
                 self._active_device_id = d['id']
                 self._volume = d['volume_percent']
 
+        self._shows_tab.fill()
+
     def onNetworkReply(self, reply):
         """
         Called when network request was finished

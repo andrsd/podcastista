@@ -35,7 +35,11 @@ def index():
     scope = ' '.join([
         'user-read-playback-state',
         'user-modify-playback-state',
-        'user-read-currently-playing'
+        'user-read-currently-playing',
+        'user-library-read',
+        'user-library-modify',
+        'user-follow-modify',
+        'user-follow-read'
     ])
     auth_manager = spotipy.oauth2.SpotifyOAuth(
         scope=scope,

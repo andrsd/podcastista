@@ -10,7 +10,6 @@ class ShowsTab(QtWidgets.QWidget):
         super().__init__()
         self._main_window = parent
         self.setupWidgets()
-        self.fillShows()
 
     def setupWidgets(self):
         layout = QtWidgets.QVBoxLayout(self)
@@ -30,9 +29,17 @@ class ShowsTab(QtWidgets.QWidget):
 
         self.setLayout(layout)
 
-    def fillShows(self):
-        pass
+    def fill(self):
+        if self._main_window.spotify is None:
+            return
+
+        shows = self._main_window.spotify.current_user_saved_shows()
+        for item in shows['items']:
+            show = item['show']
+            liw = QtWidgets.QListWidgetItem(show['name'])
+            liw.setData(QtCore.Qt.UserRole, show)
+            self._shows.addItem(liw)
 
     def onItemClicked(self, item):
         show = item.data(QtCore.Qt.UserRole)
-        self._main_window.viewShow(show)
+        self._main_window.viewShow(show['id'])
