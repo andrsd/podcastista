@@ -34,6 +34,7 @@ def session_cache_path():
 def index():
     scope = ' '.join([
         'user-read-playback-state',
+        'user-read-playback-position',
         'user-modify-playback-state',
         'user-read-currently-playing',
         'user-library-read',

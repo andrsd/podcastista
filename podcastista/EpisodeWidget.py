@@ -1,13 +1,16 @@
 from PyQt5 import QtWidgets, QtCore, QtGui
+from podcastista.assets import Assets
 
 
 class EpisodeWidget(QtWidgets.QWidget):
 
+    ARTWORK_HT = 100
+    ARTWORK_WD = 100
     DESCRIPTION_HT = 32
     TIME_WD = 100
     LINE_HT = 16
 
-    def __init__(self, episode, parent=None):
+    def __init__(self, episode, artwork=False, parent=None):
         super().__init__(parent)
 
         self._episode = episode
@@ -16,6 +19,27 @@ class EpisodeWidget(QtWidgets.QWidget):
         self._layout = QtWidgets.QHBoxLayout()
         self._layout.setContentsMargins(8, 8, 8, 8)
         self._layout.setSpacing(4)
+
+        if artwork:
+            self._artwork = QtWidgets.QLabel()
+            self._artwork.setSizePolicy(
+                QtWidgets.QSizePolicy.Fixed, QtWidgets.QSizePolicy.Fixed)
+            self._artwork.setFixedSize(self.ARTWORK_WD, self.ARTWORK_HT)
+            self._artwork.setStyleSheet("border: 1px solid #fff")
+            self._layout.addWidget(self._artwork)
+
+            images = self._episode['images']
+            img_url = None
+            for img in images:
+                if (img['height'] >= self.ARTWORK_HT and img['height'] <= 600):
+                    img_url = img['url']
+            self._img = Assets().get(img_url)
+            self._img.image_loaded.connect(self.onImageLoaded)
+
+            self._layout.addSpacing(8)
+        else:
+            self._artwork = None
+            self._img = None
 
         left_layout = QtWidgets.QVBoxLayout()
 
@@ -93,4 +117,9 @@ class EpisodeWidget(QtWidgets.QWidget):
         else:
             hrs = int(mins / 60)
             mins = int(mins % 60)
-            return str(hrs) +"h " + str(mins) + "m"
+            return str(hrs) + "h " + str(mins) + "m"
+
+    def onImageLoaded(self):
+        scaled_img = self._img.scaledToWidth(self.ARTWORK_WD)
+        pixmap = QtGui.QPixmap.fromImage(scaled_img)
+        self._artwork.setPixmap(pixmap)

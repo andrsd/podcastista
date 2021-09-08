@@ -97,6 +97,8 @@ class MainWindow(QtWidgets.QMainWindow):
         self.setMinimumWidth(780)
         self.setMinimumHeight(480)
 
+        self._shows_tab.shows_loaded.connect(self._episodes_tab.fill)
+
     def setupMenuBar(self):
         """
         Setup menu bar
