@@ -20,6 +20,11 @@ class EpisodeWidget(QtWidgets.QWidget):
         self._layout.setContentsMargins(8, 8, 8, 8)
         self._layout.setSpacing(4)
 
+        self._played = False
+        if ('resume_point' in episode and
+                episode['resume_point']['fully_played']):
+            self._played = True
+
         if artwork:
             self._artwork = QtWidgets.QLabel()
             self._artwork.setSizePolicy(
@@ -67,7 +72,8 @@ class EpisodeWidget(QtWidgets.QWidget):
         self._title.setMaximumHeight(2 * self.LINE_HT)
         font = self._title.font()
         font.setPointSizeF(font.pointSize() * 1.2)
-        font.setBold(True)
+        if not self._played:
+            font.setBold(True)
         self._title.setFont(font)
         left_layout.addWidget(self._title)
 
@@ -85,8 +91,11 @@ class EpisodeWidget(QtWidgets.QWidget):
 
         self._layout.addLayout(left_layout)
 
-        self._duration = QtWidgets.QLabel(
-            self.msToTime(self._episode['duration_ms']))
+        if self._played:
+            time = "Played"
+        else:
+            time = self.msToTime(self._episode['duration_ms'])
+        self._duration = QtWidgets.QLabel(time)
         self._duration.setSizePolicy(
             QtWidgets.QSizePolicy.Fixed, QtWidgets.QSizePolicy.Expanding)
         self._duration.setFixedWidth(self.TIME_WD)
