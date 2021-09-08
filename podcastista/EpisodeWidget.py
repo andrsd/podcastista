@@ -1,4 +1,4 @@
-from PyQt5 import QtWidgets, QtCore
+from PyQt5 import QtWidgets, QtCore, QtGui
 
 
 class EpisodeWidget(QtWidgets.QWidget):
@@ -29,6 +29,7 @@ class EpisodeWidget(QtWidgets.QWidget):
         self._date.setFixedHeight(self.LINE_HT)
         font = self._date.font()
         font.setBold(True)
+        font.setCapitalization(QtGui.QFont.AllUppercase)
         self._date.setFont(font)
         self._date.setStyleSheet("color: #888")
         left_layout.addWidget(self._date)
@@ -85,4 +86,11 @@ class EpisodeWidget(QtWidgets.QWidget):
 
     def msToTime(self, ms):
         """ Convert milliseconds to human readable time"""
-        return str(int(ms / 1000 / 60)) + " mins"
+        secs = int(ms / 1000)
+        mins = int(secs / 60)
+        if mins < 60:
+            return str(int(ms / 1000 / 60)) + " mins"
+        else:
+            hrs = int(mins / 60)
+            mins = int(mins % 60)
+            return str(hrs) +"h " + str(mins) + "m"
