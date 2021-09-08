@@ -1,4 +1,4 @@
-from PyQt5 import QtWidgets, QtCore, QtNetwork, QtGui
+from PyQt5 import QtWidgets, QtCore, QtGui
 from podcastista.assets import Assets
 from podcastista.EpisodeWidget import EpisodeWidget
 

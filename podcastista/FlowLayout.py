@@ -7,8 +7,11 @@ from PyQt5 import QtWidgets, QtCore
 
 class FlowLayout(QtWidgets.QLayout):
 
-    def __init__(self, parent, margin=-1, h_spacing=-1, v_spacing=-1):
-        super().__init__(parent)
+    def __init__(self, parent=None, margin=-1, h_spacing=-1, v_spacing=-1):
+        if parent is None:
+            super().__init__()
+        else:
+            super().__init__(parent)
         self._item_list = []
         self._h_space = h_spacing
         self._v_space = v_spacing
@@ -32,7 +35,7 @@ class FlowLayout(QtWidgets.QLayout):
                 QtWidgets.QStyle.PM_LayoutVerticalSpacing)
 
     def expandingDirections(self):
-        return None
+        return QtCore.Qt.Orientations(QtCore.Qt.Orientation(0))
 
     def hasHeightForWidth(self):
         return True

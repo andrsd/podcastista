@@ -1,6 +1,7 @@
-from PyQt5 import QtWidgets, QtCore
+from PyQt5 import QtWidgets
 from podcastista.ShowWidget import ShowWidget
 from podcastista.FlowLayout import FlowLayout
+
 
 class ShowsTab(QtWidgets.QScrollArea):
     """

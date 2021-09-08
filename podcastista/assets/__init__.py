@@ -65,7 +65,7 @@ class Assets:
             self._img_urls[url] = img
 
             req = QtNetwork.QNetworkRequest(QtCore.QUrl(url))
-            reply = self._nam.get(req)
+            self._nam.get(req)
 
             return img
 

@@ -1,6 +1,7 @@
 from PyQt5 import QtWidgets, QtGui, QtCore
 from podcastista.assets import Assets
 
+
 class ShowWidget(QtWidgets.QWidget):
 
     ARTWORK_WD = 160
@@ -54,9 +55,9 @@ class ShowWidget(QtWidgets.QWidget):
 
     def mouseReleaseEvent(self, event):
 
-        if (event.button() == QtCore.Qt.LeftButton
-            and self.rect().contains(event.pos())):
-                self.onClicked()
+        if (event.button() == QtCore.Qt.LeftButton and
+                self.rect().contains(event.pos())):
+            self.onClicked()
         else:
             return super().mouseReleaseEvent(event)
 

@@ -1,4 +1,7 @@
 from PyQt5 import QtWidgets, QtCore
+from podcastista.ShowWidget import ShowWidget
+from podcastista.EpisodeWidget import EpisodeWidget
+from podcastista.FlowLayout import FlowLayout
 
 
 class SearchThread(QtCore.QThread):
@@ -29,8 +32,7 @@ class SearchThread(QtCore.QThread):
         return self._episodes
 
 
-
-class SearchTab(QtWidgets.QWidget):
+class SearchTab(QtWidgets.QScrollArea):
     """
     Widget on main window for search
     """
@@ -38,76 +40,112 @@ class SearchTab(QtWidgets.QWidget):
     def __init__(self, parent):
         super().__init__()
         self._main_window = parent
-        self.setupWidgets()
 
-    def setupWidgets(self):
-        layout = QtWidgets.QVBoxLayout(self)
+        self._layout = QtWidgets.QVBoxLayout(self)
 
         self._search_box = QtWidgets.QLineEdit()
         self._search_box.setPlaceholderText("Search")
         self._search_box.setClearButtonEnabled(True)
         self._search_box.returnPressed.connect(self.onSearch)
         self._search_box.textChanged.connect(self.onSearchTextChanged)
-        layout.addWidget(self._search_box)
+        self._layout.addWidget(self._search_box)
 
-        self._shows_title = QtWidgets.QLabel("Shows")
-        layout.addWidget(self._shows_title)
+        self._sub_layout = QtWidgets.QVBoxLayout()
+        self._layout.addLayout(self._sub_layout)
 
-        self._shows = QtWidgets.QListWidget(self)
-        self._shows.setFlow(QtWidgets.QListView.LeftToRight)
-        self._shows.setMovement(QtWidgets.QListView.Static)
-        self._shows.setViewMode(QtWidgets.QListView.IconMode)
-        self._shows.setGridSize(QtCore.QSize(100, 120))
-        self._shows.setSpacing(4)
-        self._shows.setWrapping(True)
-        self._shows.itemClicked.connect(self.onShowClicked)
-        layout.addWidget(self._shows)
+        self._layout.addStretch()
 
-        self._episodes_title = QtWidgets.QLabel("Episodes")
-        layout.addWidget(self._episodes_title)
+        widget = QtWidgets.QWidget()
+        widget.setLayout(self._layout)
+        widget.setSizePolicy(
+            QtWidgets.QSizePolicy.Expanding,
+            QtWidgets.QSizePolicy.Expanding)
 
-        self._episodes = QtWidgets.QListWidget(self)
-        self._episodes.setFlow(QtWidgets.QListView.TopToBottom)
-        self._episodes.setMovement(QtWidgets.QListView.Static)
-        self._episodes.setViewMode(QtWidgets.QListView.ListMode)
-        self._episodes.setGridSize(QtCore.QSize(64, 64))
-        self._episodes.itemClicked.connect(self.onEpisodeClicked)
-        layout.addWidget(self._episodes)
+        self.setFrameShape(QtWidgets.QFrame.NoFrame)
+        self.setWidgetResizable(True)
+        self.setWidget(widget)
 
-        self.setLayout(layout)
-
-        self._search_box.setText("Statsthonk")
-        # self._search_box.setText("Historie")
+        self._shows_layout = FlowLayout()
+        self._episodes_layout = QtWidgets.QVBoxLayout()
 
     def onSearch(self):
-        self._shows.clear()
-        self._episodes.clear()
-
         text = self._search_box.text()
 
         self._searcher = SearchThread(self._main_window.spotify, text)
         self._searcher.finished.connect(self.onSearchFinished)
         self._searcher.start()
 
+    def clear(self):
+        while self._shows_layout.count() > 0:
+            item = self._shows_layout.takeAt(0)
+            if item.widget() is not None:
+                item.widget().deleteLater()
+
+        while self._episodes_layout.count() > 0:
+            item = self._episodes_layout.takeAt(0)
+            if item.widget() is not None:
+                item.widget().deleteLater()
+
+        while self._sub_layout.count() > 0:
+            item = self._sub_layout.takeAt(0)
+            if item.widget() is not None:
+                item.widget().deleteLater()
+
     def onSearchTextChanged(self, text):
         if len(text) == 0:
-            self._shows.clear()
-            self._episodes.clear()
+            self.clear()
 
     def onSearchFinished(self):
-        for show in self._searcher.shows['shows']['items']:
-            item = QtWidgets.QListWidgetItem(show['name'])
-            item.setData(QtCore.Qt.UserRole, show)
-            self._shows.addItem(item)
+        while self._sub_layout.count() > 0:
+            item = self._sub_layout.takeAt(0)
+            if item.widget() is not None:
+                item.widget().deleteLater()
 
-        for episode in self._searcher.episodes['episodes']['items']:
-            item = QtWidgets.QListWidgetItem(episode['name'])
-            item.setData(QtCore.Qt.UserRole, episode)
-            self._episodes.addItem(item)
+        need_hbar = False
+        if len(self._searcher.shows['shows']['items']) > 0:
+            label = QtWidgets.QLabel("Shows")
+            font = label.font()
+            font.setBold(True)
+            font.setPointSizeF(font.pointSize() * 1.5)
+            label.setFont(font)
+            self._sub_layout.addWidget(label)
 
-    def onShowClicked(self, item):
-        show = item.data(QtCore.Qt.UserRole)
-        self._main_window.viewShow(show['id'])
+            self._sub_layout.addLayout(self._shows_layout)
+
+            for show in self._searcher.shows['shows']['items']:
+                widget = ShowWidget(show, self._main_window)
+                self._shows_layout.addWidget(widget)
+
+            need_hbar = True
+
+        if need_hbar:
+            hbar = QtWidgets.QFrame()
+            hbar.setFrameShape(QtWidgets.QFrame.HLine)
+            hbar.setFrameShadow(QtWidgets.QFrame.Plain)
+            hbar.setStyleSheet('color: #444')
+            self._sub_layout.addWidget(hbar)
+
+        if len(self._searcher.episodes['episodes']['items']) > 0:
+            label = QtWidgets.QLabel("Episodes")
+            font = label.font()
+            font.setBold(True)
+            font.setPointSizeF(font.pointSize() * 1.5)
+            label.setFont(font)
+            self._sub_layout.addWidget(label)
+
+            self._sub_layout.addLayout(self._episodes_layout)
+
+            for episode in self._searcher.episodes['episodes']['items']:
+                widget = EpisodeWidget(episode)
+                self._episodes_layout.addWidget(widget)
+
+                hbar = QtWidgets.QFrame()
+                hbar.setFrameShape(QtWidgets.QFrame.HLine)
+                hbar.setFrameShadow(QtWidgets.QFrame.Plain)
+                hbar.setStyleSheet('color: #444')
+                self._episodes_layout.addWidget(hbar)
+
+            need_hbar = True
 
     def onEpisodeClicked(self, item):
         pass
