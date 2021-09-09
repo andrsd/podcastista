@@ -20,23 +20,6 @@ class ShowDetails(QtWidgets.QScrollArea):
 
         self._layout = QtWidgets.QVBoxLayout(self)
         self._layout.setContentsMargins(16, 16, 16, 16)
-        widget = QtWidgets.QWidget()
-        widget.setLayout(self._layout)
-        widget.setSizePolicy(
-            QtWidgets.QSizePolicy.Expanding,
-            QtWidgets.QSizePolicy.Expanding)
-
-        self.setFrameShape(QtWidgets.QFrame.NoFrame)
-        self.setWidgetResizable(True)
-        self.setWidget(widget)
-
-    def setShow(self, show_id):
-        self._show = self._main_window.spotify.show(show_id)
-
-        while self._layout.count() > 0:
-            item = self._layout.takeAt(0)
-            if item.widget() is not None:
-                item.widget().deleteLater()
 
         self._back = QtWidgets.QPushButton("Back")
         self._back.clicked.connect(self.onBack)
@@ -51,20 +34,12 @@ class ShowDetails(QtWidgets.QScrollArea):
         self._show_artwork.setFixedSize(self.ARTWORK_WD, self.ARTWORK_HT)
         banner_h_layout.addWidget(self._show_artwork)
 
-        images = self._show['images']
-        img_url = None
-        for img in images:
-            if (img['height'] >= self.ARTWORK_HT and img['height'] <= 300):
-                img_url = img['url']
-        self._img = Assets().get(img_url)
-        self._img.image_loaded.connect(self.onImageLoaded)
-
         banner_right_layout = QtWidgets.QVBoxLayout()
         banner_right_layout.setSpacing(2)
 
         banner_right_layout.addStretch()
 
-        self._show_title = QtWidgets.QLabel(self._show['name'])
+        self._show_title = QtWidgets.QLabel()
         self._show_title.setAlignment(
             QtCore.Qt.AlignLeft | QtCore.Qt.AlignTop)
         self._show_title.setWordWrap(True)
@@ -76,7 +51,7 @@ class ShowDetails(QtWidgets.QScrollArea):
         self._show_title.setFont(font)
         banner_right_layout.addWidget(self._show_title)
 
-        self._show_author = QtWidgets.QLabel(self._show['publisher'])
+        self._show_author = QtWidgets.QLabel()
         self._show_author.setSizePolicy(
             QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Fixed)
         self._show_author.setFixedHeight(20)
@@ -86,25 +61,11 @@ class ShowDetails(QtWidgets.QScrollArea):
         self._show_author.setFont(font)
         banner_right_layout.addWidget(self._show_author)
 
-        # self._show_description = QtWidgets.QLabel(self._show['description'])
-        # self._show_description.setAlignment(
-        #     QtCore.Qt.AlignLeft | QtCore.Qt.AlignTop)
-        # self._show_description.setSizePolicy(
-        #     QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Expanding)
-        # banner_right_layout.addWidget(self._show_description)
-
-        # banner_right_layout.addStretch()
-
-        # self._follow_button = QtWidgets.QPushButton("Follow")
-        # self._follow_button.clicked.connect(self.onFollow)
-        # banner_right_layout.addWidget(self._follow_button)
-        # self.updateFollowButton()
-
         banner_h_layout.addLayout(banner_right_layout)
 
         banner = QtWidgets.QWidget()
         banner.setSizePolicy(
-            QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Expanding)
+            QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Fixed)
         banner.setLayout(banner_h_layout)
         self._layout.addWidget(banner)
 
@@ -122,6 +83,38 @@ class ShowDetails(QtWidgets.QScrollArea):
         self._episodes_layout.setContentsMargins(0, 0, 0, 0)
         self._episodes_layout.setSpacing(0)
 
+        self._layout.addLayout(self._episodes_layout)
+        self._layout.addStretch()
+
+        widget = QtWidgets.QWidget()
+        widget.setLayout(self._layout)
+        widget.setSizePolicy(
+            QtWidgets.QSizePolicy.Expanding,
+            QtWidgets.QSizePolicy.Expanding)
+
+        self.setFrameShape(QtWidgets.QFrame.NoFrame)
+        self.setWidgetResizable(True)
+        self.setWidget(widget)
+
+    def setShow(self, show_id):
+        self._show = self._main_window.spotify.show(show_id)
+
+        while self._episodes_layout.count() > 0:
+            item = self._episodes_layout.takeAt(0)
+            if item.widget() is not None:
+                item.widget().deleteLater()
+
+        images = self._show['images']
+        img_url = None
+        for img in images:
+            if (img['height'] >= self.ARTWORK_HT and img['height'] <= 300):
+                img_url = img['url']
+        self._img = Assets().get(img_url)
+        self._img.image_loaded.connect(self.onImageLoaded)
+
+        self._show_title.setText(self._show['name'])
+        self._show_author.setText(self._show['publisher'])
+
         for episode in self._show['episodes']['items']:
             widget = EpisodeWidget(episode)
             self._episodes_layout.addWidget(widget)
@@ -129,9 +122,6 @@ class ShowDetails(QtWidgets.QScrollArea):
             hline = HLine()
             hline.setStyleSheet("margin-left: 16px; margin-right: 16px; color: #444")
             self._episodes_layout.addWidget(hline)
-
-        self._layout.addLayout(self._episodes_layout)
-        self._layout.addStretch()
 
     def onBack(self, item):
         self._main_window.viewMain()
