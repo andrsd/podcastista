@@ -77,5 +77,8 @@ class EpisodesListTab(QtWidgets.QScrollArea):
                 self._layout.addWidget(w)
 
                 hline = HLine()
-                hline.setStyleSheet("margin-left: 16px; margin-right: 16px; color: #444")
+                hline.setStyleSheet(
+                    "margin-left: 16px; "
+                    "margin-right: 16px; "
+                    "color: #444")
                 self._layout.addWidget(hline)

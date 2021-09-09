@@ -1,5 +1,6 @@
 from PyQt5 import QtCore
 
+
 def msToTime(ms):
     """ Convert milliseconds to human readable time"""
     secs = int(ms / 1000)
@@ -10,6 +11,7 @@ def msToTime(ms):
         hrs = int(mins / 60)
         mins = int(mins % 60)
         return str(hrs) + "h " + str(mins) + "m"
+
 
 def dateToStr(date):
     qdate = QtCore.QDate.fromString(date, 'yyyy-MM-dd')

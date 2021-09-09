@@ -120,7 +120,10 @@ class ShowDetails(QtWidgets.QScrollArea):
             self._episodes_layout.addWidget(widget)
 
             hline = HLine()
-            hline.setStyleSheet("margin-left: 16px; margin-right: 16px; color: #444")
+            hline.setStyleSheet(
+                "margin-left: 16px; "
+                "margin-right: 16px; "
+                "color: #444")
             self._episodes_layout.addWidget(hline)
 
     def onBack(self):

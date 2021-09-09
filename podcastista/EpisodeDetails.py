@@ -77,7 +77,10 @@ class EpisodeDetails(QtWidgets.QScrollArea):
         self._layout.addWidget(banner)
 
         hline = HLine()
-        hline.setStyleSheet("margin-left: 16px; margin-right: 16px; color: #444")
+        hline.setStyleSheet(
+            "margin-left: 16px; "
+            "margin-right: 16px; "
+            "color: #444")
         self._layout.addWidget(hline)
 
         self._description = QtWidgets.QLabel()
@@ -89,11 +92,16 @@ class EpisodeDetails(QtWidgets.QScrollArea):
         font = self._description.font()
         font.setPointSizeF(font.pointSize() * 1.15)
         self._description.setFont(font)
-        self._description.setStyleSheet("margin-left: 16px; margin-right: 140px")
+        self._description.setStyleSheet(
+            "margin-left: 16px; "
+            "margin-right: 140px")
         self._layout.addWidget(self._description)
 
         hline = HLine()
-        hline.setStyleSheet("margin-left: 16px; margin-right: 16px; color: #444")
+        hline.setStyleSheet(
+            "margin-left: 16px; "
+            "margin-right: 16px; "
+            "color: #444")
         self._layout.addWidget(hline)
 
         self._layout.addStretch()
@@ -118,7 +126,6 @@ class EpisodeDetails(QtWidgets.QScrollArea):
                 img_url = img['url']
         self._img = Assets().get(img_url)
         self._img.image_loaded.connect(self.onImageLoaded)
-
 
         time = utils.msToTime(self._episode['duration_ms'])
         date = utils.dateToStr(self._episode['release_date'])
