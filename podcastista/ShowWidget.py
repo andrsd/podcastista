@@ -11,19 +11,17 @@ class ShowWidget(QtWidgets.QWidget):
 
     def __init__(self, show, parent=None):
         super().__init__(parent)
-
         self._show = show
         self._main_window = parent
 
         self._layout = QtWidgets.QVBoxLayout()
-        self._layout.setContentsMargins(8, 8, 8, 8)
-        self._layout.setSpacing(4)
+        self._layout.setContentsMargins(16, 16, 16, 16)
+        self._layout.setSpacing(6)
 
         self._artwork = QtWidgets.QLabel()
         self._artwork.setSizePolicy(
             QtWidgets.QSizePolicy.Fixed, QtWidgets.QSizePolicy.Fixed)
         self._artwork.setFixedSize(self.ARTWORK_WD, self.ARTWORK_HT)
-        self._artwork.setStyleSheet("border: 1px solid #fff")
         self._layout.addWidget(self._artwork)
 
         images = self._show['images']
@@ -34,13 +32,15 @@ class ShowWidget(QtWidgets.QWidget):
         self._img = Assets().get(img_url)
         self._img.image_loaded.connect(self.onImageLoaded)
 
-        self._layout.addSpacing(4)
+        self._layout.addSpacing(8)
 
         self._title = QtWidgets.QLabel(self._show['name'])
         self._title.setFixedWidth(self.ARTWORK_WD)
         self._title.setFixedHeight(self.LINE_HT)
         font = self._title.font()
         font.setBold(True)
+        font.setPointSizeF(font.pointSize() * 1.1)
+        self._title.setStyleSheet("color: #fff")
         self._title.setFont(font)
         self._layout.addWidget(self._title)
 
@@ -52,6 +52,10 @@ class ShowWidget(QtWidgets.QWidget):
         self.setSizePolicy(
             QtWidgets.QSizePolicy.Fixed, QtWidgets.QSizePolicy.Fixed)
         self.setLayout(self._layout)
+        self.setAttribute(QtCore.Qt.WA_StyledBackground, True)
+        self.setStyleSheet(
+            "ShowWidget { background-color: #2f2f2f } "
+            "ShowWidget:hover { background-color: #363636 }")
 
     def mouseReleaseEvent(self, event):
 
