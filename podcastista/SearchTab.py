@@ -2,6 +2,7 @@ from PyQt5 import QtWidgets, QtCore
 from podcastista.ShowWidget import ShowWidget
 from podcastista.EpisodeWidget import EpisodeWidget
 from podcastista.FlowLayout import FlowLayout
+from podcastista.HLine import HLine
 
 
 class SearchThread(QtCore.QThread):
@@ -119,11 +120,7 @@ class SearchTab(QtWidgets.QScrollArea):
             need_hbar = True
 
         if need_hbar:
-            hbar = QtWidgets.QFrame()
-            hbar.setFrameShape(QtWidgets.QFrame.HLine)
-            hbar.setFrameShadow(QtWidgets.QFrame.Plain)
-            hbar.setStyleSheet('color: #444')
-            self._sub_layout.addWidget(hbar)
+            self._sub_layout.addWidget(HLine())
 
         if len(self._searcher.episodes['episodes']['items']) > 0:
             label = QtWidgets.QLabel("Episodes")
@@ -139,11 +136,7 @@ class SearchTab(QtWidgets.QScrollArea):
                 widget = EpisodeWidget(episode)
                 self._episodes_layout.addWidget(widget)
 
-                hbar = QtWidgets.QFrame()
-                hbar.setFrameShape(QtWidgets.QFrame.HLine)
-                hbar.setFrameShadow(QtWidgets.QFrame.Plain)
-                hbar.setStyleSheet('color: #444')
-                self._episodes_layout.addWidget(hbar)
+                self._episodes_layout.addWidget(HLine())
 
             need_hbar = True
 

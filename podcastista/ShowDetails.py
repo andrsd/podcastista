@@ -1,6 +1,7 @@
 from PyQt5 import QtWidgets, QtCore, QtGui
 from podcastista.assets import Assets
 from podcastista.EpisodeWidget import EpisodeWidget
+from podcastista.HLine import HLine
 
 
 class ShowDetails(QtWidgets.QScrollArea):
@@ -106,11 +107,7 @@ class ShowDetails(QtWidgets.QScrollArea):
         banner.setLayout(banner_h_layout)
         self._layout.addWidget(banner)
 
-        hbar = QtWidgets.QFrame()
-        hbar.setFrameShape(QtWidgets.QFrame.HLine)
-        hbar.setFrameShadow(QtWidgets.QFrame.Plain)
-        hbar.setStyleSheet('color: #444')
-        self._layout.addWidget(hbar)
+        self._layout.addWidget(HLine())
 
         self._episodes_label = QtWidgets.QLabel("Episodes")
         font = self._episodes_label.font()
@@ -123,11 +120,7 @@ class ShowDetails(QtWidgets.QScrollArea):
             widget = EpisodeWidget(episode)
             self._layout.addWidget(widget)
 
-            hbar = QtWidgets.QFrame()
-            hbar.setFrameShape(QtWidgets.QFrame.HLine)
-            hbar.setFrameShadow(QtWidgets.QFrame.Plain)
-            hbar.setStyleSheet('color: #444')
-            self._layout.addWidget(hbar)
+            self._layout.addWidget(HLine())
 
         self._layout.addStretch()
 

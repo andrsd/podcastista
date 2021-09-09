@@ -1,5 +1,6 @@
 from PyQt5 import QtWidgets, QtCore
 from podcastista.EpisodeWidget import EpisodeWidget
+from podcastista.HLine import HLine
 
 
 class FillThread(QtCore.QThread):
@@ -74,8 +75,4 @@ class EpisodesListTab(QtWidgets.QScrollArea):
                     parent=self._main_window)
                 self._layout.addWidget(w)
 
-                hbar = QtWidgets.QFrame()
-                hbar.setFrameShape(QtWidgets.QFrame.HLine)
-                hbar.setFrameShadow(QtWidgets.QFrame.Plain)
-                hbar.setStyleSheet('color: #444')
-                self._layout.addWidget(hbar)
+                self._layout.addWidget(HLine())
