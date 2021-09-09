@@ -34,9 +34,10 @@ class ShowEpisodeWidget(QtWidgets.QWidget):
 
         self._layout.addSpacing(8)
 
-        episode = self._show['episodes'][0]
+        self._episode = self._show['episodes'][0]
 
-        date = QtCore.QDate.fromString(episode['release_date'], 'yyyy-MM-dd')
+        date = QtCore.QDate.fromString(
+            self._episode['release_date'], 'yyyy-MM-dd')
         locale = QtCore.QLocale.system()
         self._date = QtWidgets.QLabel(locale.toString(date))
         self._date.setSizePolicy(
@@ -51,7 +52,7 @@ class ShowEpisodeWidget(QtWidgets.QWidget):
         self._date.setStyleSheet("color: #888")
         self._layout.addWidget(self._date)
 
-        self._episode_name = QtWidgets.QLabel(episode['name'])
+        self._episode_name = QtWidgets.QLabel(self._episode['name'])
         self._episode_name.setWordWrap(True)
         self._episode_name.setFixedWidth(self.ARTWORK_WD)
         self._episode_name.setFixedHeight(62)
@@ -87,7 +88,7 @@ class ShowEpisodeWidget(QtWidgets.QWidget):
             return super().mouseReleaseEvent(event)
 
     def onClicked(self):
-        pass
+        self._main_window.viewEpisode(self._episode)
 
     def onImageLoaded(self):
         scaled_img = self._img.scaledToWidth(self.ARTWORK_WD)

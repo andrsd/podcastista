@@ -120,7 +120,7 @@ class EpisodeWidget(QtWidgets.QWidget):
             return super().mouseReleaseEvent(event)
 
     def onClicked(self):
-        pass
+        self._main_window.viewEpisode(self._episode)
 
     def msToTime(self, ms):
         """ Convert milliseconds to human readable time"""

@@ -14,6 +14,7 @@ from podcastista.EpisodesListTab import EpisodesListTab
 from podcastista.ShowsTab import ShowsTab
 from podcastista.SearchTab import SearchTab
 from podcastista.ShowDetails import ShowDetails
+from podcastista.EpisodeDetails import EpisodeDetails
 
 
 WINDOW_TITLE = "Podcastista"
@@ -56,6 +57,7 @@ class MainWindow(QtWidgets.QMainWindow):
         self._shows_tab = None
         self._search_box = None
         self._show = None
+        self._episode_detail = None
 
         server.signaler.connectToSpotify.connect(self.setupSpotify)
 
@@ -88,10 +90,12 @@ class MainWindow(QtWidgets.QMainWindow):
 
         #
         self._show = ShowDetails(self)
+        self._episode_detail = EpisodeDetails(self)
 
         self._stacked_layout = QtWidgets.QStackedLayout()
         self._stacked_layout.addWidget(self._tabs)
         self._stacked_layout.addWidget(self._show)
+        self._stacked_layout.addWidget(self._episode_detail)
 
         w = QtWidgets.QWidget()
         w.setLayout(self._stacked_layout)
@@ -371,3 +375,12 @@ class MainWindow(QtWidgets.QMainWindow):
     def followShow(self, show_id):
         # TODO
         pass
+
+    def viewEpisode(self, episode):
+        """
+        Display "Episode details"
+
+        @param episode Episode data object from spotify
+        """
+        self._episode_detail.fill(episode)
+        self._stacked_layout.setCurrentWidget(self._episode_detail)

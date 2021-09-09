@@ -116,14 +116,14 @@ class ShowDetails(QtWidgets.QScrollArea):
         self._show_author.setText(self._show['publisher'])
 
         for episode in self._show['episodes']['items']:
-            widget = EpisodeWidget(episode)
+            widget = EpisodeWidget(episode, parent=self._main_window)
             self._episodes_layout.addWidget(widget)
 
             hline = HLine()
             hline.setStyleSheet("margin-left: 16px; margin-right: 16px; color: #444")
             self._episodes_layout.addWidget(hline)
 
-    def onBack(self, item):
+    def onBack(self):
         self._main_window.viewMain()
 
     def onFollow(self):

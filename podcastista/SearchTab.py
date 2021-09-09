@@ -133,12 +133,9 @@ class SearchTab(QtWidgets.QScrollArea):
             self._sub_layout.addLayout(self._episodes_layout)
 
             for episode in self._searcher.episodes['episodes']['items']:
-                widget = EpisodeWidget(episode)
+                widget = EpisodeWidget(episode, parent=self._main_window)
                 self._episodes_layout.addWidget(widget)
 
                 self._episodes_layout.addWidget(HLine())
 
             need_hbar = True
-
-    def onEpisodeClicked(self, item):
-        pass
