@@ -59,6 +59,7 @@ class EpisodeWidget(QtWidgets.QWidget):
         font = self._date.font()
         font.setBold(True)
         font.setCapitalization(QtGui.QFont.AllUppercase)
+        font.setPointSizeF(font.pointSize() * 0.9)
         self._date.setFont(font)
         self._date.setStyleSheet("color: #888")
         left_layout.addWidget(self._date)

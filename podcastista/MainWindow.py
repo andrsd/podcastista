@@ -9,6 +9,7 @@ from PyQt5 import QtWidgets, QtCore, QtNetwork, QtGui
 from podcastista import server
 from podcastista.assets import Assets
 from podcastista.AboutDialog import AboutDialog
+from podcastista.ListenNowTab import ListenNowTab
 from podcastista.EpisodesListTab import EpisodesListTab
 from podcastista.ShowsTab import ShowsTab
 from podcastista.SearchTab import SearchTab
@@ -75,10 +76,12 @@ class MainWindow(QtWidgets.QMainWindow):
         self._tabs = QtWidgets.QTabWidget(self)
         self._tabs.setDocumentMode(True)
 
+        self._listen_now_tab = ListenNowTab(self)
         self._episodes_tab = EpisodesListTab(self)
         self._shows_tab = ShowsTab(self)
         self._search_box = SearchTab(self)
 
+        self._tabs.addTab(self._listen_now_tab, "Listen Now")
         self._tabs.addTab(self._episodes_tab, "Episodes")
         self._tabs.addTab(self._shows_tab, "Shows")
         self._tabs.addTab(self._search_box, "Search")
@@ -307,6 +310,7 @@ class MainWindow(QtWidgets.QMainWindow):
                 self._volume = d['volume_percent']
 
         self._shows_tab.fill()
+        self._listen_now_tab.fill()
 
     def onNetworkReply(self, reply):
         """
