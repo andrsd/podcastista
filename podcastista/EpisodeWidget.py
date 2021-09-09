@@ -17,7 +17,7 @@ class EpisodeWidget(QtWidgets.QWidget):
         self._main_window = parent
 
         self._layout = QtWidgets.QHBoxLayout()
-        self._layout.setContentsMargins(8, 8, 8, 8)
+        self._layout.setContentsMargins(16, 16, 16, 16)
         self._layout.setSpacing(4)
 
         self._played = False
@@ -106,6 +106,10 @@ class EpisodeWidget(QtWidgets.QWidget):
         self.setSizePolicy(
             QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Fixed)
         self.setLayout(self._layout)
+        self.setAttribute(QtCore.Qt.WA_StyledBackground, True)
+        self.setStyleSheet(
+            "EpisodeWidget { background-color: #282828 } "
+            "EpisodeWidget:hover { background-color: #363636 }")
 
     def mouseReleaseEvent(self, event):
         if (event.button() == QtCore.Qt.LeftButton and

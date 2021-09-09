@@ -19,6 +19,7 @@ class ShowDetails(QtWidgets.QScrollArea):
         self._follow_button = None
 
         self._layout = QtWidgets.QVBoxLayout(self)
+        self._layout.setContentsMargins(16, 16, 16, 16)
         widget = QtWidgets.QWidget()
         widget.setLayout(self._layout)
         widget.setSizePolicy(
@@ -42,7 +43,7 @@ class ShowDetails(QtWidgets.QScrollArea):
         self._layout.addWidget(self._back)
 
         banner_h_layout = QtWidgets.QHBoxLayout()
-        banner_h_layout.setContentsMargins(0, 0, 0, 0)
+        banner_h_layout.setContentsMargins(16, 16, 16, 16)
 
         self._show_artwork = QtWidgets.QLabel()
         self._show_artwork.setSizePolicy(
@@ -110,18 +111,26 @@ class ShowDetails(QtWidgets.QScrollArea):
         self._layout.addWidget(HLine())
 
         self._episodes_label = QtWidgets.QLabel("Episodes")
+        self._episodes_label.setStyleSheet("margin-left: 12px")
         font = self._episodes_label.font()
         font.setBold(True)
         font.setPointSizeF(font.pointSize() * 1.5)
         self._episodes_label.setFont(font)
         self._layout.addWidget(self._episodes_label)
 
+        self._episodes_layout = QtWidgets.QVBoxLayout()
+        self._episodes_layout.setContentsMargins(0, 0, 0, 0)
+        self._episodes_layout.setSpacing(0)
+
         for episode in self._show['episodes']['items']:
             widget = EpisodeWidget(episode)
-            self._layout.addWidget(widget)
+            self._episodes_layout.addWidget(widget)
 
-            self._layout.addWidget(HLine())
+            hline = HLine()
+            hline.setStyleSheet("margin-left: 16px; margin-right: 16px; color: #444")
+            self._episodes_layout.addWidget(hline)
 
+        self._layout.addLayout(self._episodes_layout)
         self._layout.addStretch()
 
     def onBack(self, item):
