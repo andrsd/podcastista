@@ -120,11 +120,9 @@ class EpisodeDetails(QtWidgets.QScrollArea):
         self._img.image_loaded.connect(self.onImageLoaded)
 
 
-        date = QtCore.QDate.fromString(
-            self._episode['release_date'], 'yyyy-MM-dd')
-        locale = QtCore.QLocale.system()
         time = utils.msToTime(self._episode['duration_ms'])
-        self._date.setText('   |   '.join([locale.toString(date), time]))
+        date = utils.dateToStr(self._episode['release_date'])
+        self._date.setText('   |   '.join([date, time]))
 
         self._title.setText(self._episode['name'])
 

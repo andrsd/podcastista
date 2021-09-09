@@ -1,3 +1,4 @@
+from PyQt5 import QtCore
 
 def msToTime(ms):
     """ Convert milliseconds to human readable time"""
@@ -9,3 +10,8 @@ def msToTime(ms):
         hrs = int(mins / 60)
         mins = int(mins % 60)
         return str(hrs) + "h " + str(mins) + "m"
+
+def dateToStr(date):
+    qdate = QtCore.QDate.fromString(date, 'yyyy-MM-dd')
+    locale = QtCore.QLocale.system()
+    return locale.toString(qdate)

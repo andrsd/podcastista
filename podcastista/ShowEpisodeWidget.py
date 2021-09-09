@@ -1,5 +1,6 @@
 from PyQt5 import QtWidgets, QtGui, QtCore
 from podcastista.assets import Assets
+from podcastista import utils
 
 
 class ShowEpisodeWidget(QtWidgets.QWidget):
@@ -36,10 +37,8 @@ class ShowEpisodeWidget(QtWidgets.QWidget):
 
         self._episode = self._show['episodes'][0]
 
-        date = QtCore.QDate.fromString(
-            self._episode['release_date'], 'yyyy-MM-dd')
-        locale = QtCore.QLocale.system()
-        self._date = QtWidgets.QLabel(locale.toString(date))
+        self._date = QtWidgets.QLabel(
+            utils.dateToStr(self._episode['release_date']))
         self._date.setSizePolicy(
             QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Fixed)
         self._date.setFixedWidth(self.ARTWORK_WD)

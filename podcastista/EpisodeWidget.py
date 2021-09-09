@@ -49,10 +49,8 @@ class EpisodeWidget(QtWidgets.QWidget):
 
         left_layout = QtWidgets.QVBoxLayout()
 
-        date = QtCore.QDate.fromString(
-            self._episode['release_date'], 'yyyy-MM-dd')
-        locale = QtCore.QLocale.system()
-        self._date = QtWidgets.QLabel(locale.toString(date))
+        self._date = QtWidgets.QLabel(
+            utils.dateToStr(self._episode['release_date']))
         self._date.setWordWrap(True)
         self._date.setSizePolicy(
             QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Fixed)
