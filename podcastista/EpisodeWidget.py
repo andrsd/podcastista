@@ -1,5 +1,6 @@
 from PyQt5 import QtWidgets, QtCore, QtGui
 from podcastista.assets import Assets
+from podcastista import utils
 
 
 class EpisodeWidget(QtWidgets.QWidget):
@@ -95,7 +96,7 @@ class EpisodeWidget(QtWidgets.QWidget):
         if self._played:
             time = "Played"
         else:
-            time = self.msToTime(self._episode['duration_ms'])
+            time = utils.msToTime(self._episode['duration_ms'])
         self._duration = QtWidgets.QLabel(time)
         self._duration.setSizePolicy(
             QtWidgets.QSizePolicy.Fixed, QtWidgets.QSizePolicy.Expanding)
@@ -121,17 +122,6 @@ class EpisodeWidget(QtWidgets.QWidget):
 
     def onClicked(self):
         self._main_window.viewEpisode(self._episode)
-
-    def msToTime(self, ms):
-        """ Convert milliseconds to human readable time"""
-        secs = int(ms / 1000)
-        mins = int(secs / 60)
-        if mins < 60:
-            return str(int(ms / 1000 / 60)) + " mins"
-        else:
-            hrs = int(mins / 60)
-            mins = int(mins % 60)
-            return str(hrs) + "h " + str(mins) + "m"
 
     def onImageLoaded(self):
         scaled_img = self._img.scaledToWidth(self.ARTWORK_WD)

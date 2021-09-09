@@ -1,6 +1,7 @@
 from PyQt5 import QtWidgets, QtCore, QtGui
 from podcastista.assets import Assets
 from podcastista.HLine import HLine
+from podcastista import utils
 
 
 class EpisodeDetails(QtWidgets.QScrollArea):
@@ -122,7 +123,7 @@ class EpisodeDetails(QtWidgets.QScrollArea):
         date = QtCore.QDate.fromString(
             self._episode['release_date'], 'yyyy-MM-dd')
         locale = QtCore.QLocale.system()
-        time = self.msToTime(self._episode['duration_ms'])
+        time = utils.msToTime(self._episode['duration_ms'])
         self._date.setText('   |   '.join([locale.toString(date), time]))
 
         self._title.setText(self._episode['name'])
@@ -136,14 +137,3 @@ class EpisodeDetails(QtWidgets.QScrollArea):
         scaled_img = self._img.scaledToWidth(self.ARTWORK_WD)
         pixmap = QtGui.QPixmap.fromImage(scaled_img)
         self._artwork.setPixmap(pixmap)
-
-    def msToTime(self, ms):
-        """ Convert milliseconds to human readable time"""
-        secs = int(ms / 1000)
-        mins = int(secs / 60)
-        if mins < 60:
-            return str(int(ms / 1000 / 60)) + " mins"
-        else:
-            hrs = int(mins / 60)
-            mins = int(mins % 60)
-            return str(hrs) + "h " + str(mins) + "m"
