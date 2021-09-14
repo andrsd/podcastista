@@ -116,9 +116,8 @@ class MainWindow(QtWidgets.QMainWindow):
               padding: 4 8 4 8;
             }
             QPushButton:checked {
-              font-weight: bold;
               border-radius: 4px;
-              background-color: #808080;
+              background-color: #444;
               border: none;
             }"""
 
