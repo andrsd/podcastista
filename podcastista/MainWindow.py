@@ -88,29 +88,56 @@ class MainWindow(QtWidgets.QMainWindow):
         left_layout = QtWidgets.QVBoxLayout()
         left_layout.setSpacing(4)
 
+        search_ss = """
+            QLineEdit {
+              background-color: #444;
+              border-radius: 4px;
+            }
+            QLineEdit:focus {
+              border-radius: 4px;
+              background-color: #555;
+              border: 3px solid #006040;
+            }"""
         self._search_box = QtWidgets.QLineEdit()
         self._search_box.setPlaceholderText("Search")
         self._search_box.setClearButtonEnabled(True)
-        self._search_box.setFixedHeight(27)
+        self._search_box.setFixedHeight(25)
+        self._search_box.setStyleSheet(search_ss)
+        self._search_box.setAttribute(QtCore.Qt.WA_MacShowFocusRect, 0)
         self._search_box.returnPressed.connect(self.onSearch)
         self._search_box.textChanged.connect(self.onSearchTextChanged)
         left_layout.addWidget(self._search_box)
 
         left_layout.addSpacing(20)
 
+        item_ss = """
+            QPushButton {
+              text-align: left;
+              padding: 4 8 4 8;
+            }
+            QPushButton:checked {
+              font-weight: bold;
+              border-radius: 4px;
+              background-color: #808080;
+              border: none;
+            }"""
+
         self._left_listen_now = QtWidgets.QPushButton("Listen Now")
         self._left_listen_now.setFlat(True)
-        self._left_listen_now.setStyleSheet("text-align: left")
+        self._left_listen_now.setCheckable(True)
+        self._left_listen_now.setStyleSheet(item_ss)
         left_layout.addWidget(self._left_listen_now)
 
         self._left_shows = QtWidgets.QPushButton("Shows")
         self._left_shows.setFlat(True)
-        self._left_shows.setStyleSheet("text-align: left")
+        self._left_shows.setCheckable(True)
+        self._left_shows.setStyleSheet(item_ss)
         left_layout.addWidget(self._left_shows)
 
         self._left_latest_episodes = QtWidgets.QPushButton("Latest Episodes")
         self._left_latest_episodes.setFlat(True)
-        self._left_latest_episodes.setStyleSheet("text-align: left")
+        self._left_latest_episodes.setCheckable(True)
+        self._left_latest_episodes.setStyleSheet(item_ss)
         left_layout.addWidget(self._left_latest_episodes)
 
         self._left_group = QtWidgets.QButtonGroup()
