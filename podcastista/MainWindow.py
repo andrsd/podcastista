@@ -86,7 +86,7 @@ class MainWindow(QtWidgets.QMainWindow):
         self._search_tab = SearchTab(self)
 
         left_layout = QtWidgets.QVBoxLayout()
-        left_layout.setSpacing(0)
+        left_layout.setSpacing(4)
 
         self._search_box = QtWidgets.QLineEdit()
         self._search_box.setPlaceholderText("Search")
@@ -96,7 +96,7 @@ class MainWindow(QtWidgets.QMainWindow):
         self._search_box.textChanged.connect(self.onSearchTextChanged)
         left_layout.addWidget(self._search_box)
 
-        left_layout.addSpacing(10)
+        left_layout.addSpacing(20)
 
         self._left_listen_now = QtWidgets.QPushButton("Listen Now")
         self._left_listen_now.setFlat(True)
@@ -118,7 +118,7 @@ class MainWindow(QtWidgets.QMainWindow):
         self._left_group.addButton(self._left_listen_now, self.LISTEN_NOW_ID)
         self._left_group.addButton(self._left_shows, self.SHOWS_ID)
         self._left_group.addButton(self._left_latest_episodes,
-            self.LATEST_EPISODES_ID)
+                                   self.LATEST_EPISODES_ID)
 
         self._left_group.buttonClicked.connect(self.onLeftGroupClicked)
 
@@ -126,7 +126,7 @@ class MainWindow(QtWidgets.QMainWindow):
 
         self._left = QtWidgets.QWidget()
         self._left.setSizePolicy(QtWidgets.QSizePolicy.Expanding,
-            QtWidgets.QSizePolicy.Expanding)
+                                 QtWidgets.QSizePolicy.Expanding)
         self._left.setMinimumWidth(200)
         self._left.setMaximumWidth(250)
         self._left.setStyleSheet("background-color: #222")
@@ -451,6 +451,7 @@ class MainWindow(QtWidgets.QMainWindow):
     def onSearch(self):
         self._stacked_layout.setCurrentWidget(self._search_tab)
 
+        self._search_tab.clear()
         text = self._search_box.text()
         self._search_tab.search(text)
 

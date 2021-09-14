@@ -44,11 +44,6 @@ class SearchTab(QtWidgets.QScrollArea):
 
         self._layout = QtWidgets.QVBoxLayout(self)
 
-        self._sub_layout = QtWidgets.QVBoxLayout()
-        self._layout.addLayout(self._sub_layout)
-
-        self._layout.addStretch()
-
         widget = QtWidgets.QWidget()
         widget.setLayout(self._layout)
         widget.setSizePolicy(
@@ -78,14 +73,14 @@ class SearchTab(QtWidgets.QScrollArea):
             if item.widget() is not None:
                 item.widget().deleteLater()
 
-        while self._sub_layout.count() > 0:
-            item = self._sub_layout.takeAt(0)
+        while self._layout.count() > 0:
+            item = self._layout.takeAt(0)
             if item.widget() is not None:
                 item.widget().deleteLater()
 
     def onSearchFinished(self):
-        while self._sub_layout.count() > 0:
-            item = self._sub_layout.takeAt(0)
+        while self._layout.count() > 0:
+            item = self._layout.takeAt(0)
             if item.widget() is not None:
                 item.widget().deleteLater()
 
@@ -96,9 +91,9 @@ class SearchTab(QtWidgets.QScrollArea):
             font.setBold(True)
             font.setPointSizeF(font.pointSize() * 1.5)
             label.setFont(font)
-            self._sub_layout.addWidget(label)
+            self._layout.addWidget(label)
 
-            self._sub_layout.addLayout(self._shows_layout)
+            self._layout.addLayout(self._shows_layout)
 
             for show in self._searcher.shows['shows']['items']:
                 widget = ShowWidget(show, self._main_window)
@@ -107,7 +102,7 @@ class SearchTab(QtWidgets.QScrollArea):
             need_hbar = True
 
         if need_hbar:
-            self._sub_layout.addWidget(HLine())
+            self._layout.addWidget(HLine())
 
         if len(self._searcher.episodes['episodes']['items']) > 0:
             label = QtWidgets.QLabel("Episodes")
@@ -115,9 +110,9 @@ class SearchTab(QtWidgets.QScrollArea):
             font.setBold(True)
             font.setPointSizeF(font.pointSize() * 1.5)
             label.setFont(font)
-            self._sub_layout.addWidget(label)
+            self._layout.addWidget(label)
 
-            self._sub_layout.addLayout(self._episodes_layout)
+            self._layout.addLayout(self._episodes_layout)
 
             for episode in self._searcher.episodes['episodes']['items']:
                 widget = EpisodeWidget(episode, parent=self._main_window)
