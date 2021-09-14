@@ -36,6 +36,10 @@ class MainWindow(QtWidgets.QMainWindow):
     # to Spotify)
     UPDATE_DELAY_MS = 500
 
+    LISTEN_NOW_ID = 1
+    SHOWS_ID = 2
+    LATEST_EPISODES_ID = 3
+
     def __init__(self):
         super().__init__()
         random.seed()
@@ -52,10 +56,10 @@ class MainWindow(QtWidgets.QMainWindow):
         self._about_dlg = None
         self._window_menu = None
 
-        self._tabs = None
+        self._splitter = None
         self._episodes_tab = None
         self._shows_tab = None
-        self._search_box = None
+        self._search_tab = None
         self._show = None
         self._episode_detail = None
 
@@ -63,6 +67,8 @@ class MainWindow(QtWidgets.QMainWindow):
 
         self._nam = QtNetwork.QNetworkAccessManager()
         self._nam.finished.connect(self.onNetworkReply)
+
+        self._history = []
 
         self.setupWidgets()
         self.readSettings()
@@ -74,32 +80,81 @@ class MainWindow(QtWidgets.QMainWindow):
         """
         Setup widgets
         """
-        #
-        self._tabs = QtWidgets.QTabWidget(self)
-        self._tabs.setDocumentMode(True)
-
         self._listen_now_tab = ListenNowTab(self)
         self._episodes_tab = EpisodesListTab(self)
         self._shows_tab = ShowsTab(self)
-        self._search_box = SearchTab(self)
+        self._search_tab = SearchTab(self)
 
-        self._tabs.addTab(self._listen_now_tab, "Listen Now")
-        self._tabs.addTab(self._episodes_tab, "Episodes")
-        self._tabs.addTab(self._shows_tab, "Shows")
-        self._tabs.addTab(self._search_box, "Search")
+        left_layout = QtWidgets.QVBoxLayout()
+        left_layout.setSpacing(0)
+
+        self._search_box = QtWidgets.QLineEdit()
+        self._search_box.setPlaceholderText("Search")
+        self._search_box.setClearButtonEnabled(True)
+        self._search_box.setFixedHeight(27)
+        self._search_box.returnPressed.connect(self.onSearch)
+        self._search_box.textChanged.connect(self.onSearchTextChanged)
+        left_layout.addWidget(self._search_box)
+
+        left_layout.addSpacing(10)
+
+        self._left_listen_now = QtWidgets.QPushButton("Listen Now")
+        self._left_listen_now.setFlat(True)
+        self._left_listen_now.setStyleSheet("text-align: left")
+        left_layout.addWidget(self._left_listen_now)
+
+        self._left_shows = QtWidgets.QPushButton("Shows")
+        self._left_shows.setFlat(True)
+        self._left_shows.setStyleSheet("text-align: left")
+        left_layout.addWidget(self._left_shows)
+
+        self._left_latest_episodes = QtWidgets.QPushButton("Latest Episodes")
+        self._left_latest_episodes.setFlat(True)
+        self._left_latest_episodes.setStyleSheet("text-align: left")
+        left_layout.addWidget(self._left_latest_episodes)
+
+        self._left_group = QtWidgets.QButtonGroup()
+        self._left_group.setExclusive(True)
+        self._left_group.addButton(self._left_listen_now, self.LISTEN_NOW_ID)
+        self._left_group.addButton(self._left_shows, self.SHOWS_ID)
+        self._left_group.addButton(self._left_latest_episodes,
+            self.LATEST_EPISODES_ID)
+
+        self._left_group.buttonClicked.connect(self.onLeftGroupClicked)
+
+        left_layout.addStretch()
+
+        self._left = QtWidgets.QWidget()
+        self._left.setSizePolicy(QtWidgets.QSizePolicy.Expanding,
+            QtWidgets.QSizePolicy.Expanding)
+        self._left.setMinimumWidth(200)
+        self._left.setMaximumWidth(250)
+        self._left.setStyleSheet("background-color: #222")
+
+        self._left.setLayout(left_layout)
 
         #
         self._show = ShowDetails(self)
         self._episode_detail = EpisodeDetails(self)
 
         self._stacked_layout = QtWidgets.QStackedLayout()
-        self._stacked_layout.addWidget(self._tabs)
+        self._stacked_layout.addWidget(self._search_tab)
+        self._stacked_layout.addWidget(self._listen_now_tab)
+        self._stacked_layout.addWidget(self._episodes_tab)
+        self._stacked_layout.addWidget(self._shows_tab)
         self._stacked_layout.addWidget(self._show)
         self._stacked_layout.addWidget(self._episode_detail)
 
         w = QtWidgets.QWidget()
         w.setLayout(self._stacked_layout)
-        self.setCentralWidget(w)
+
+        self._splitter = QtWidgets.QSplitter(self)
+        self._splitter.setOrientation(QtCore.Qt.Horizontal)
+        self._splitter.setChildrenCollapsible(False)
+        self._splitter.addWidget(self._left)
+        self._splitter.addWidget(w)
+
+        self.setCentralWidget(self._splitter)
 
         self.setMinimumWidth(780)
         self.setMinimumHeight(480)
@@ -259,7 +314,9 @@ class MainWindow(QtWidgets.QMainWindow):
         """
         self._settings.beginGroup("MainWindow")
         self._settings.setValue("geometry", self.saveGeometry())
-        self._settings.setValue("active_tab", self._tabs.currentIndex())
+        self._settings.setValue("splitter", self._splitter.saveState())
+        active_page = self._stacked_layout.currentIndex()
+        self._settings.setValue("active_page", active_page)
         self._settings.endGroup()
 
     def readSettings(self):
@@ -278,8 +335,13 @@ class MainWindow(QtWidgets.QMainWindow):
             pass
         else:
             self.restoreGeometry(geom)
-        active_tab = self._settings.value("active_tab", 0)
-        self._tabs.setCurrentIndex(active_tab)
+        state = self._settings.value("splitter")
+        if state is not None:
+            self._splitter.restoreState(state)
+        active_page = self._settings.value("active_page", 0)
+        if active_page != -1:
+            self._stacked_layout.setCurrentIndex(active_page)
+
         self._settings.endGroup()
 
     @property
@@ -350,27 +412,27 @@ class MainWindow(QtWidgets.QMainWindow):
         mb.exec()
 
     def onViewEpisodes(self):
-        self._stacked_layout.setCurrentWidget(self._tabs)
-        self._tabs.setCurrentWidget(self._episodes_tab)
+        self._stacked_layout.setCurrentWidget(self._episodes_tab)
 
     def onViewShows(self):
-        self._stacked_layout.setCurrentWidget(self._tabs)
-        self._tabs.setCurrentWidget(self._shows_tab)
+        self._stacked_layout.setCurrentWidget(self._shows_tab)
 
-    def viewShow(self, show):
+    def viewShow(self, show_id):
         """
         Display "Show details"
 
-        @param show Show data object from spotify
+        @param show_id ID of the show from spotify
         """
-        self._show.setShow(show)
+        self._history.append(self._stacked_layout.currentWidget())
+        self._show.setShow(show_id)
         self._stacked_layout.setCurrentWidget(self._show)
 
-    def viewMain(self):
+    def onBack(self):
         """
-        Show tabs with "episodes/show"
+        Go back
         """
-        self._stacked_layout.setCurrentWidget(self._tabs)
+        w = self._history.pop()
+        self._stacked_layout.setCurrentWidget(w)
 
     def followShow(self, show_id):
         # TODO
@@ -382,5 +444,27 @@ class MainWindow(QtWidgets.QMainWindow):
 
         @param episode Episode data object from spotify
         """
+        self._history.append(self._stacked_layout.currentWidget())
         self._episode_detail.fill(episode)
         self._stacked_layout.setCurrentWidget(self._episode_detail)
+
+    def onSearch(self):
+        self._stacked_layout.setCurrentWidget(self._search_tab)
+
+        text = self._search_box.text()
+        self._search_tab.search(text)
+
+    def onSearchTextChanged(self, text):
+        if len(text) == 0:
+            self._search_tab.clear()
+
+    def onLeftGroupClicked(self, button):
+        id = self._left_group.id(button)
+        button.setFocus()
+        if id == self.LISTEN_NOW_ID:
+            self._stacked_layout.setCurrentWidget(self._listen_now_tab)
+        elif id == self.SHOWS_ID:
+            self._stacked_layout.setCurrentWidget(self._shows_tab)
+        elif id == self.LATEST_EPISODES_ID:
+            self._stacked_layout.setCurrentWidget(self._episodes_tab)
+        self._history = []

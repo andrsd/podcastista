@@ -136,7 +136,7 @@ class EpisodeDetails(QtWidgets.QScrollArea):
         self._description.setText(self._episode['description'])
 
     def onBack(self):
-        self._main_window.viewMain()
+        self._main_window.onBack()
 
     def onImageLoaded(self):
         scaled_img = self._img.scaledToWidth(self.ARTWORK_WD)

@@ -96,6 +96,10 @@ class ShowDetails(QtWidgets.QScrollArea):
         self.setWidgetResizable(True)
         self.setWidget(widget)
 
+    @property
+    def id(self):
+        return self._show['id']
+
     def setShow(self, show_id):
         self._show = self._main_window.spotify.show(show_id)
 
@@ -127,7 +131,7 @@ class ShowDetails(QtWidgets.QScrollArea):
             self._episodes_layout.addWidget(hline)
 
     def onBack(self):
-        self._main_window.viewMain()
+        self._main_window.onBack()
 
     def onFollow(self):
         self._main_window.followShow(self._show['id'])

@@ -44,13 +44,6 @@ class SearchTab(QtWidgets.QScrollArea):
 
         self._layout = QtWidgets.QVBoxLayout(self)
 
-        self._search_box = QtWidgets.QLineEdit()
-        self._search_box.setPlaceholderText("Search")
-        self._search_box.setClearButtonEnabled(True)
-        self._search_box.returnPressed.connect(self.onSearch)
-        self._search_box.textChanged.connect(self.onSearchTextChanged)
-        self._layout.addWidget(self._search_box)
-
         self._sub_layout = QtWidgets.QVBoxLayout()
         self._layout.addLayout(self._sub_layout)
 
@@ -69,9 +62,7 @@ class SearchTab(QtWidgets.QScrollArea):
         self._shows_layout = FlowLayout()
         self._episodes_layout = QtWidgets.QVBoxLayout()
 
-    def onSearch(self):
-        text = self._search_box.text()
-
+    def search(self, text):
         self._searcher = SearchThread(self._main_window.spotify, text)
         self._searcher.finished.connect(self.onSearchFinished)
         self._searcher.start()
@@ -91,10 +82,6 @@ class SearchTab(QtWidgets.QScrollArea):
             item = self._sub_layout.takeAt(0)
             if item.widget() is not None:
                 item.widget().deleteLater()
-
-    def onSearchTextChanged(self, text):
-        if len(text) == 0:
-            self.clear()
 
     def onSearchFinished(self):
         while self._sub_layout.count() > 0:
