@@ -24,11 +24,7 @@ class ShowWidget(QtWidgets.QWidget):
         self._artwork.setFixedSize(self.ARTWORK_WD, self.ARTWORK_HT)
         self._layout.addWidget(self._artwork)
 
-        images = self._show['images']
-        img_url = None
-        for img in images:
-            if (img['height'] >= self.ARTWORK_HT and img['height'] <= 600):
-                img_url = img['url']
+        img_url = self._show['images'][0]['url']
         self._img = Assets().get(img_url)
         self._img.image_loaded.connect(self.onImageLoaded)
 
