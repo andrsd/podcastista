@@ -94,15 +94,13 @@ class EpisodeDetails(QtWidgets.QScrollArea):
         self._description = QtWidgets.QLabel()
         self._description.setWordWrap(True)
         self._description.setSizePolicy(
-            QtWidgets.QSizePolicy.Fixed, QtWidgets.QSizePolicy.Fixed)
+            QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Fixed)
         self._description.setAlignment(
             QtCore.Qt.AlignLeft | QtCore.Qt.AlignTop)
         font = self._description.font()
         font.setPointSizeF(font.pointSize() * 1.15)
         self._description.setFont(font)
-        self._description.setStyleSheet(
-            "margin-left: 16px; "
-            "margin-right: 140px")
+        self._description.setContentsMargins(16, 20, 240, 20)
         self._layout.addWidget(self._description)
 
         hline = HLine()
