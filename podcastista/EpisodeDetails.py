@@ -147,6 +147,13 @@ class EpisodeDetails(QtWidgets.QScrollArea):
         self.setWidgetResizable(True)
         self.setWidget(widget)
 
+    @property
+    def id(self):
+        if self._episode is None:
+            return None
+        else:
+            return self._episode['id']
+
     def fill(self, episode):
         self._episode = episode
 

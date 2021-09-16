@@ -102,7 +102,10 @@ class ShowDetails(QtWidgets.QScrollArea):
 
     @property
     def id(self):
-        return self._show['id']
+        if self._show is None:
+            return None
+        else:
+            return self._show['id']
 
     def setShow(self, show_id):
         self._show = self._main_window.spotify.show(show_id)

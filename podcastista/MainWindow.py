@@ -343,6 +343,9 @@ class MainWindow(QtWidgets.QMainWindow):
         self._settings.setValue("splitter", self._splitter.saveState())
         active_page = self._stacked_layout.currentIndex()
         self._settings.setValue("active_page", active_page)
+        self._settings.setValue("active_show_id", self._show.id)
+        self._settings.setValue("active_episode_id", self._episode_detail.id)
+        self._settings.setValue("history", self._history)
         self._settings.endGroup()
 
     def readSettings(self):
@@ -367,7 +370,7 @@ class MainWindow(QtWidgets.QMainWindow):
         active_page = self._settings.value("active_page", 0)
         if active_page != -1:
             self._stacked_layout.setCurrentIndex(active_page)
-
+        self._history = self._settings.value("history", [])
         self._settings.endGroup()
 
     @property
@@ -403,6 +406,19 @@ class MainWindow(QtWidgets.QMainWindow):
 
         self._shows_tab.fill()
         self._listen_now_tab.fill()
+
+        self._settings.beginGroup("MainWindow")
+        if self._stacked_layout.currentWidget() == self._show:
+            show_id = self._settings.value("active_show_id")
+            if show_id is not None:
+                self._show.setShow(show_id)
+        elif self._stacked_layout.currentWidget() == self._episode_detail:
+            episode_id = self._settings.value("active_episode_id")
+            if episode_id is not None:
+                episode = self._spotify.episode(episode_id)
+                self._episode_detail.fill(episode)
+
+        self._settings.endGroup()
 
     def onNetworkReply(self, reply):
         """
@@ -449,7 +465,7 @@ class MainWindow(QtWidgets.QMainWindow):
 
         @param show_id ID of the show from spotify
         """
-        self._history.append(self._stacked_layout.currentWidget())
+        self._history.append(self._stacked_layout.currentIndex())
         self._show.setShow(show_id)
         self._stacked_layout.setCurrentWidget(self._show)
 
@@ -457,8 +473,8 @@ class MainWindow(QtWidgets.QMainWindow):
         """
         Go back
         """
-        w = self._history.pop()
-        self._stacked_layout.setCurrentWidget(w)
+        idx = self._history.pop()
+        self._stacked_layout.setCurrentIndex(idx)
 
     def followShow(self, show_id):
         # TODO
@@ -470,7 +486,7 @@ class MainWindow(QtWidgets.QMainWindow):
 
         @param episode Episode data object from spotify
         """
-        self._history.append(self._stacked_layout.currentWidget())
+        self._history.append(self._stacked_layout.currentIndex())
         self._episode_detail.fill(episode)
         self._stacked_layout.setCurrentWidget(self._episode_detail)
 
