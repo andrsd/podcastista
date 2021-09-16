@@ -3,6 +3,7 @@ from podcastista.ShowWidget import ShowWidget
 from podcastista.EpisodeWidget import EpisodeWidget
 from podcastista.FlowLayout import FlowLayout
 from podcastista.HLine import HLine
+from podcastista.SubsectionTitle import SubsectionTitle
 
 
 class SearchThread(QtCore.QThread):
@@ -86,11 +87,7 @@ class SearchTab(QtWidgets.QScrollArea):
 
         need_hbar = False
         if len(self._searcher.shows['shows']['items']) > 0:
-            label = QtWidgets.QLabel("Shows")
-            font = label.font()
-            font.setBold(True)
-            font.setPointSizeF(font.pointSize() * 1.5)
-            label.setFont(font)
+            label = SubsectionTitle("Shows")
             self._layout.addWidget(label)
 
             self._layout.addLayout(self._shows_layout)
@@ -105,11 +102,7 @@ class SearchTab(QtWidgets.QScrollArea):
             self._layout.addWidget(HLine())
 
         if len(self._searcher.episodes['episodes']['items']) > 0:
-            label = QtWidgets.QLabel("Episodes")
-            font = label.font()
-            font.setBold(True)
-            font.setPointSizeF(font.pointSize() * 1.5)
-            label.setFont(font)
+            label = SubsectionTitle("Episodes")
             self._layout.addWidget(label)
 
             self._layout.addLayout(self._episodes_layout)

@@ -3,6 +3,7 @@ from podcastista.assets import Assets
 from podcastista.EpisodeWidget import EpisodeWidget
 from podcastista.HLine import HLine
 from podcastista.BackButton import BackButton
+from podcastista.SubsectionTitle import SubsectionTitle
 
 
 class ShowDetails(QtWidgets.QScrollArea):
@@ -79,12 +80,8 @@ class ShowDetails(QtWidgets.QScrollArea):
 
         self._layout.addWidget(HLine())
 
-        self._episodes_label = QtWidgets.QLabel("Episodes")
+        self._episodes_label = SubsectionTitle("Episodes")
         self._episodes_label.setStyleSheet("margin-left: 12px")
-        font = self._episodes_label.font()
-        font.setBold(True)
-        font.setPointSizeF(font.pointSize() * 1.5)
-        self._episodes_label.setFont(font)
         self._layout.addWidget(self._episodes_label)
 
         self._episodes_layout = QtWidgets.QVBoxLayout()
