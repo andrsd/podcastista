@@ -1,6 +1,7 @@
 from PyQt5 import QtWidgets, QtCore, QtGui
 from podcastista.assets import Assets
 from podcastista.HLine import HLine
+from podcastista.BackButton import BackButton
 from podcastista import utils
 
 
@@ -19,12 +20,19 @@ class EpisodeDetails(QtWidgets.QScrollArea):
         self._episode = None
         self._follow_button = None
 
-        self._layout = QtWidgets.QVBoxLayout(self)
-        self._layout.setContentsMargins(16, 16, 16, 16)
+        self._top_layout = QtWidgets.QVBoxLayout(self)
+        self._top_layout.setSpacing(0)
+        self._top_layout.setContentsMargins(4, 8, 4, 0)
 
-        self._back = QtWidgets.QPushButton("Back")
+        self._back = BackButton()
         self._back.clicked.connect(self.onBack)
-        self._layout.addWidget(self._back)
+        self._top_layout.addWidget(self._back)
+
+        self._layout = QtWidgets.QVBoxLayout()
+        self._layout.setSpacing(8)
+        self._layout.setContentsMargins(16, 0, 16, 16)
+        self._top_layout.addLayout(self._layout)
+        self._top_layout.addStretch()
 
         banner_h_layout = QtWidgets.QHBoxLayout()
         banner_h_layout.setContentsMargins(16, 16, 16, 16)
@@ -107,7 +115,7 @@ class EpisodeDetails(QtWidgets.QScrollArea):
         self._layout.addStretch()
 
         widget = QtWidgets.QWidget()
-        widget.setLayout(self._layout)
+        widget.setLayout(self._top_layout)
         widget.setSizePolicy(
             QtWidgets.QSizePolicy.Expanding,
             QtWidgets.QSizePolicy.Expanding)
