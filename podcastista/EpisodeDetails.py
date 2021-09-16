@@ -2,6 +2,8 @@ from PyQt5 import QtWidgets, QtCore, QtGui
 from podcastista.assets import Assets
 from podcastista.HLine import HLine
 from podcastista.BackButton import BackButton
+from podcastista.SubsectionTitle import SubsectionTitle
+from podcastista.InfoLabel import InfoLabel
 from podcastista import utils
 
 
@@ -110,6 +112,29 @@ class EpisodeDetails(QtWidgets.QScrollArea):
             "color: #444")
         self._layout.addWidget(hline)
 
+        self._layout.addSpacing(8)
+
+        self._info_label = SubsectionTitle("Information")
+        self._info_label.setStyleSheet("margin-left: 12px")
+        self._layout.addWidget(self._info_label)
+
+        grid = QtWidgets.QGridLayout()
+        grid.setContentsMargins(8, 0, 8, 0)
+
+        self._length_info = InfoLabel("Length")
+        grid.addWidget(self._length_info, 0, 0)
+
+        self._pub_date_info = InfoLabel("Published")
+        grid.addWidget(self._pub_date_info, 0, 1)
+
+        self._language_info = InfoLabel("Language")
+        grid.addWidget(self._language_info, 1, 0)
+
+        self._rating_info = InfoLabel("Rating")
+        grid.addWidget(self._rating_info, 1, 1)
+
+        self._layout.addLayout(grid)
+
         self._layout.addStretch()
 
         widget = QtWidgets.QWidget()
@@ -140,6 +165,17 @@ class EpisodeDetails(QtWidgets.QScrollArea):
         self._title.setText(self._episode['name'])
 
         self._description.setText(self._episode['description'])
+
+        self._length_info.set(time)
+        self._pub_date_info.set(utils.longDate(self._episode['release_date']))
+        locale = QtCore.QLocale(self._episode['language'])
+        lang = QtCore.QLocale.languageToString(locale.language())
+        self._language_info.set(lang)
+        if self._episode['explicit']:
+            rating = "Mature"
+        else:
+            rating = "Clean"
+        self._rating_info.set(rating)
 
     def onBack(self):
         self._main_window.onBack()
