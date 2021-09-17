@@ -195,11 +195,7 @@ class EpisodeDetails(QtWidgets.QScrollArea):
         locale = QtCore.QLocale(self._episode['language'])
         lang = QtCore.QLocale.languageToString(locale.language())
         self._language_info.set(lang)
-        if self._episode['explicit']:
-            rating = "Mature"
-        else:
-            rating = "Clean"
-        self._rating_info.set(rating)
+        self._rating_info.set(utils.rating(self._episode['explicit']))
 
     def onBack(self):
         self._main_window.onBack()

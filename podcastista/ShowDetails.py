@@ -4,6 +4,8 @@ from podcastista.EpisodeWidget import EpisodeWidget
 from podcastista.HLine import HLine
 from podcastista.BackButton import BackButton
 from podcastista.SubsectionTitle import SubsectionTitle
+from podcastista.InfoLabel import InfoLabel
+from podcastista import utils
 
 
 class ShowDetails(QtWidgets.QScrollArea):
@@ -155,6 +157,53 @@ class ShowDetails(QtWidgets.QScrollArea):
 
         self._layout.addLayout(self._episodes_layout)
 
+        self._see_all_episodes = QtWidgets.QPushButton("")
+        self._see_all_episodes.setStyleSheet("""
+            QPushButton {
+                font-size: 13px;
+                margin-left: 38px;
+            }
+            QPushButton:hover {
+                color: #307BF6;
+            }
+            """)
+        self._see_all_episodes.setFlat(True)
+        self._see_all_episodes.setFixedHeight(28)
+        self._see_all_episodes.setSizePolicy(
+            QtWidgets.QSizePolicy.Fixed,
+            QtWidgets.QSizePolicy.Fixed)
+        self._layout.addWidget(self._see_all_episodes)
+
+        hline = HLine()
+        hline.setStyleSheet(
+            "margin-left: 38px; "
+            "margin-right: 28px; "
+            "color: #444")
+        self._layout.addWidget(hline)
+
+        self._layout.addSpacing(8)
+
+        self._info_label = SubsectionTitle("Information")
+        self._info_label.setStyleSheet("margin-left: 36px")
+        self._layout.addWidget(self._info_label)
+
+        grid = QtWidgets.QGridLayout()
+        grid.setContentsMargins(28, 0, 16, 0)
+
+        self._publisher_info = InfoLabel("Publisher")
+        grid.addWidget(self._publisher_info, 0, 0)
+
+        self._episodes_info = InfoLabel("Episodes")
+        grid.addWidget(self._episodes_info, 0, 1)
+
+        self._rating_info = InfoLabel("Rating")
+        grid.addWidget(self._rating_info, 1, 0)
+
+        self._language_info = InfoLabel("Language")
+        grid.addWidget(self._language_info, 1, 1)
+
+        self._layout.addLayout(grid)
+
         widget = QtWidgets.QWidget()
         widget.setLayout(self._top_layout)
         widget.setSizePolicy(
@@ -196,7 +245,7 @@ class ShowDetails(QtWidgets.QScrollArea):
             ": ".join([latest_episode['name'], latest_episode['description']])
         )
 
-        for episode in self._show['episodes']['items']:
+        for episode in self._show['episodes']['items'][0:8]:
             widget = EpisodeWidget(episode, parent=self._main_window)
             self._episodes_layout.addWidget(widget)
 
@@ -208,6 +257,18 @@ class ShowDetails(QtWidgets.QScrollArea):
             self._episodes_layout.addWidget(hline)
 
         self.updateFollowState()
+
+        self._see_all_episodes.setText(
+            "See all {} Episodes".format(self._show['total_episodes']))
+
+        self._publisher_info.set(self._show['publisher'])
+        self._episodes_info.set(str(self._show['total_episodes']))
+        langs = []
+        for l in self._show['languages']:
+            locale = QtCore.QLocale(l)
+            langs.append(QtCore.QLocale.languageToString(locale.language()))
+        self._language_info.set(", ".join(langs))
+        self._rating_info.set(utils.rating(self._show['explicit']))
 
     def onBack(self):
         self._main_window.onBack()

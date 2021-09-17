@@ -23,3 +23,10 @@ def longDate(date):
     qdate = QtCore.QDate.fromString(date, 'yyyy-MM-dd')
     locale = QtCore.QLocale.system()
     return locale.toString(qdate, locale.dateFormat())
+
+
+def rating(explicit):
+    if explicit:
+        return "Mature"
+    else:
+        return "Clean"
