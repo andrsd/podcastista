@@ -314,12 +314,15 @@ class ShowDetails(QtWidgets.QWidget):
         self.updateFollowState()
 
     def onVertScroll(self, value):
-        if value > 80:
+        LO_VALUE = 80
+        HI_VALUE = 100
+
+        if value > LO_VALUE:
             self._show_label.setText(self._show['name'])
             clr2 = QtGui.QColor("#C8C8C8")
 
-            if value < 100:
-                t = (float(value) - 80) / 20
+            if value < HI_VALUE:
+                t = (float(value) - LO_VALUE) / (HI_VALUE - LO_VALUE)
                 clr = QtGui.QColor.fromRgbF(
                     clr2.redF(),
                     clr2.greenF(),
