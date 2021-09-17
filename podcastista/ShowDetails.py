@@ -18,7 +18,6 @@ class ShowDetails(QtWidgets.QScrollArea):
         super().__init__()
         self._main_window = parent
         self._show = None
-        self._follow_button = None
 
         self._top_layout = QtWidgets.QVBoxLayout(self)
         self._top_layout.setSpacing(0)
@@ -86,6 +85,7 @@ class ShowDetails(QtWidgets.QScrollArea):
 
         banner_right_layout.addSpacing(25)
 
+        button_layout = QtWidgets.QHBoxLayout()
         self._play_latest = QtWidgets.QPushButton("\u25B6  Latest Episode")
         css = """
             border-radius: 4px;
@@ -101,7 +101,34 @@ class ShowDetails(QtWidgets.QScrollArea):
         font.setBold(True)
         font.setPointSizeF(font.pointSize() * 1.1)
         self._play_latest.setFont(font)
-        banner_right_layout.addWidget(self._play_latest)
+        button_layout.addWidget(self._play_latest)
+
+        button_layout.addStretch()
+
+        self._follow_button = QtWidgets.QPushButton("")
+        css = """
+            QPushButton {
+                border-radius: 4px;
+                background-color: #282828;
+                border: 2px solid #888;
+                font-size: 13px;
+                font-weight: bold;
+                text-transform: uppercase;
+                color: #C8C8C8;
+            }
+            QPushButton:hover {
+                border-color: #C8C8C8;
+            }
+            """
+        self._follow_button.setFlat(True)
+        self._follow_button.setStyleSheet(css)
+        self._follow_button.setFixedWidth(120)
+        self._follow_button.setFixedHeight(28)
+        self._follow_button.setContentsMargins(0, 0, 0, 0)
+        self._follow_button.clicked.connect(self.onFollowClicked)
+        button_layout.addWidget(self._follow_button)
+
+        banner_right_layout.addLayout(button_layout)
 
         banner_h_layout.addLayout(banner_right_layout)
 
@@ -180,17 +207,31 @@ class ShowDetails(QtWidgets.QScrollArea):
                 "color: #444")
             self._episodes_layout.addWidget(hline)
 
+        self.updateFollowState()
+
     def onBack(self):
         self._main_window.onBack()
 
-    def onFollow(self):
-        self._main_window.followShow(self._show['id'])
-        self.updateFollowButton()
+    def updateFollowState(self):
+        show_id = self._show['id']
+        res = self._main_window.spotify.current_user_saved_shows_contains(
+            [show_id])
+        self._following = res[0]
 
-    def updateFollowButton(self):
-        self._follow_button.setEnabled(False)
+        if self._following:
+            text = "Following"
+        else:
+            text = "Follow"
+        self._follow_button.setText(text)
 
     def onImageLoaded(self):
         scaled_img = self._img.scaledToWidth(self.ARTWORK_WD)
         pixmap = QtGui.QPixmap.fromImage(scaled_img)
         self._show_artwork.setPixmap(pixmap)
+
+    def onFollowClicked(self):
+        if self._following:
+            self._main_window.unfollowShow(self._show['id'])
+        else:
+            self._main_window.followShow(self._show['id'])
+        self.updateFollowState()

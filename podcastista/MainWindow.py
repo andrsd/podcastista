@@ -404,8 +404,7 @@ class MainWindow(QtWidgets.QMainWindow):
                 self._active_device_id = d['id']
                 self._volume = d['volume_percent']
 
-        self._shows_tab.fill()
-        self._listen_now_tab.fill()
+        self.loadData()
 
         self._settings.beginGroup("MainWindow")
         if self._stacked_layout.currentWidget() == self._show:
@@ -417,7 +416,6 @@ class MainWindow(QtWidgets.QMainWindow):
             if episode_id is not None:
                 episode = self._spotify.episode(episode_id)
                 self._episode_detail.fill(episode)
-
         self._settings.endGroup()
 
     def onNetworkReply(self, reply):
@@ -453,6 +451,15 @@ class MainWindow(QtWidgets.QMainWindow):
             horizontalSpacer, layout.rowCount(), 0, 1, layout.columnCount())
         mb.exec()
 
+    def clearData(self):
+        self._shows_tab.clear()
+        self._episodes_tab.clear()
+        self._listen_now_tab.clear()
+
+    def loadData(self):
+        self._shows_tab.fill()
+        self._listen_now_tab.fill()
+
     def onViewEpisodes(self):
         self._stacked_layout.setCurrentWidget(self._episodes_tab)
 
@@ -477,8 +484,14 @@ class MainWindow(QtWidgets.QMainWindow):
         self._stacked_layout.setCurrentIndex(idx)
 
     def followShow(self, show_id):
-        # TODO
-        pass
+        self.spotify.current_user_saved_shows_add([show_id])
+        self.clearData()
+        self.loadData()
+
+    def unfollowShow(self, show_id):
+        self.spotify.current_user_saved_shows_delete([show_id])
+        self.clearData()
+        self.loadData()
 
     def viewEpisode(self, episode):
         """

@@ -31,6 +31,12 @@ class ShowsTab(QtWidgets.QScrollArea):
     def shows(self):
         return self._shows
 
+    def clear(self):
+        while self._layout.count() > 0:
+            item = self._layout.takeAt(0)
+            if item.widget() is not None:
+                item.widget().deleteLater()
+
     def fill(self):
         if self._main_window.spotify is None:
             return
