@@ -18,13 +18,32 @@ class EpisodeWidget(QtWidgets.QWidget):
         self._main_window = parent
 
         self._layout = QtWidgets.QHBoxLayout()
-        self._layout.setContentsMargins(16, 16, 16, 16)
-        self._layout.setSpacing(4)
+        self._layout.setContentsMargins(0, 16, 16, 16)
+        self._layout.setSpacing(0)
 
         self._played = False
         if ('resume_point' in episode and
                 episode['resume_point']['fully_played']):
             self._played = True
+
+        self._play = QtWidgets.QPushButton("\u25B6")
+        css = """
+            QPushButton {
+                color: #282828;
+            }
+            QPushButton:hover {
+                color: #307BF6;
+            }
+            """
+        self._play.setFlat(True)
+        self._play.setStyleSheet(css)
+        self._play.setFixedWidth(38)
+        self._play.setFixedHeight(28)
+        self._play.setContentsMargins(0, 0, 0, 0)
+        font = self._play.font()
+        font.setPointSizeF(font.pointSize() * 1.3)
+        self._play.setFont(font)
+        self._layout.addWidget(self._play)
 
         if artwork:
             self._artwork = QtWidgets.QLabel()
@@ -44,6 +63,7 @@ class EpisodeWidget(QtWidgets.QWidget):
             self._img = None
 
         left_layout = QtWidgets.QVBoxLayout()
+        left_layout.setSpacing(8)
 
         self._date = QtWidgets.QLabel(
             utils.dateToStr(self._episode['release_date']))
@@ -103,9 +123,10 @@ class EpisodeWidget(QtWidgets.QWidget):
             QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Fixed)
         self.setLayout(self._layout)
         self.setAttribute(QtCore.Qt.WA_StyledBackground, True)
-        self.setStyleSheet(
-            "EpisodeWidget { background-color: #282828 } "
-            "EpisodeWidget:hover { background-color: #363636 }")
+        self.setStyleSheet("""
+            EpisodeWidget { background-color: #282828 }
+            EpisodeWidget:hover { background-color: #363636 }
+            """)
 
     def mouseReleaseEvent(self, event):
         if (event.button() == QtCore.Qt.LeftButton and

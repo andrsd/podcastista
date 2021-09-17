@@ -37,6 +37,7 @@ class EpisodesListTab(QtWidgets.QScrollArea):
 
         self._layout = QtWidgets.QVBoxLayout(self)
         self._layout.setSpacing(0)
+        self._layout.setContentsMargins(4, 16, 16, 16)
 
         widget = QtWidgets.QWidget()
         widget.setLayout(self._layout)
@@ -78,7 +79,7 @@ class EpisodesListTab(QtWidgets.QScrollArea):
 
                 hline = HLine()
                 hline.setStyleSheet(
-                    "margin-left: 16px; "
-                    "margin-right: 16px; "
+                    "margin-left: 38px; "
+                    "margin-right: 38px; "
                     "color: #444")
                 self._layout.addWidget(hline)

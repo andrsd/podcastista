@@ -30,12 +30,12 @@ class ShowDetails(QtWidgets.QScrollArea):
 
         self._layout = QtWidgets.QVBoxLayout()
         self._layout.setSpacing(8)
-        self._layout.setContentsMargins(16, 0, 16, 16)
+        self._layout.setContentsMargins(0, 0, 16, 16)
         self._top_layout.addLayout(self._layout)
         self._top_layout.addStretch()
 
         banner_h_layout = QtWidgets.QHBoxLayout()
-        banner_h_layout.setContentsMargins(16, 16, 16, 16)
+        banner_h_layout.setContentsMargins(40, 16, 30, 16)
         banner_h_layout.setSpacing(40)
 
         self._show_artwork = QtWidgets.QLabel()
@@ -111,10 +111,15 @@ class ShowDetails(QtWidgets.QScrollArea):
         banner.setLayout(banner_h_layout)
         self._layout.addWidget(banner)
 
-        self._layout.addWidget(HLine())
+        hline = HLine()
+        hline.setStyleSheet(
+            "margin-left: 38px; "
+            "margin-right: 28px; "
+            "color: #444;")
+        self._layout.addWidget(hline)
 
         self._episodes_label = SubsectionTitle("Episodes")
-        self._episodes_label.setStyleSheet("margin-left: 12px")
+        self._episodes_label.setStyleSheet("margin-left: 36px")
         self._layout.addWidget(self._episodes_label)
 
         self._episodes_layout = QtWidgets.QVBoxLayout()
@@ -170,8 +175,8 @@ class ShowDetails(QtWidgets.QScrollArea):
 
             hline = HLine()
             hline.setStyleSheet(
-                "margin-left: 16px; "
-                "margin-right: 16px; "
+                "margin-left: 38px; "
+                "margin-right: 28px; "
                 "color: #444")
             self._episodes_layout.addWidget(hline)
 
