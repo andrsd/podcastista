@@ -49,7 +49,7 @@ class EpisodeDetails(QtWidgets.QScrollArea):
         banner_right_layout = QtWidgets.QVBoxLayout()
         banner_right_layout.setSpacing(2)
 
-        banner_right_layout.addSpacing(40)
+        banner_right_layout.addSpacing(25)
 
         self._date = QtWidgets.QLabel()
         self._date.setWordWrap(True)
@@ -76,7 +76,24 @@ class EpisodeDetails(QtWidgets.QScrollArea):
         self._title.setFont(font)
         banner_right_layout.addWidget(self._title)
 
-        banner_right_layout.addStretch()
+        banner_right_layout.addSpacing(10)
+
+        self._play_latest = QtWidgets.QPushButton("\u25B6  Play")
+        css = """
+            border-radius: 4px;
+            background-color: #307BF6;
+            border: none;
+            """
+        self._play_latest.setFlat(True)
+        self._play_latest.setStyleSheet(css)
+        self._play_latest.setFixedWidth(150)
+        self._play_latest.setFixedHeight(28)
+        self._play_latest.setContentsMargins(0, 0, 0, 0)
+        font = self._play_latest.font()
+        font.setBold(True)
+        font.setPointSizeF(font.pointSize() * 1.1)
+        self._play_latest.setFont(font)
+        banner_right_layout.addWidget(self._play_latest)
 
         banner_h_layout.addLayout(banner_right_layout)
 
