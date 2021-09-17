@@ -172,7 +172,7 @@ class ShowDetails(QtWidgets.QScrollArea):
         else:
             return self._show['id']
 
-    def setShow(self, show_id):
+    def fill(self, show_id):
         self._show = self._main_window.spotify.show(show_id)
 
         while self._episodes_layout.count() > 0:

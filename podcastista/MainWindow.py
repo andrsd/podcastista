@@ -410,7 +410,7 @@ class MainWindow(QtWidgets.QMainWindow):
         if self._stacked_layout.currentWidget() == self._show:
             show_id = self._settings.value("active_show_id")
             if show_id is not None:
-                self._show.setShow(show_id)
+                self._show.fill(show_id)
         elif self._stacked_layout.currentWidget() == self._episode_detail:
             episode_id = self._settings.value("active_episode_id")
             if episode_id is not None:
@@ -473,7 +473,7 @@ class MainWindow(QtWidgets.QMainWindow):
         @param show_id ID of the show from spotify
         """
         self._history.append(self._stacked_layout.currentIndex())
-        self._show.setShow(show_id)
+        self._show.fill(show_id)
         self._stacked_layout.setCurrentWidget(self._show)
 
     def onBack(self):
