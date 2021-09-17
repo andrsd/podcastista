@@ -8,7 +8,7 @@ from podcastista.InfoLabel import InfoLabel
 from podcastista import utils
 
 
-class ShowDetails(QtWidgets.QScrollArea):
+class ShowDetails(QtWidgets.QWidget):
     """
     Widget on main window with show details
     """
@@ -21,19 +21,29 @@ class ShowDetails(QtWidgets.QScrollArea):
         self._main_window = parent
         self._show = None
 
-        self._top_layout = QtWidgets.QVBoxLayout(self)
-        self._top_layout.setSpacing(0)
-        self._top_layout.setContentsMargins(4, 8, 4, 0)
+        layout = QtWidgets.QVBoxLayout(self)
+        layout.setSpacing(0)
+        layout.setContentsMargins(0, 0, 0, 0)
+
+        top_layout = QtWidgets.QHBoxLayout()
+        top_layout.setContentsMargins(4, 4, 4, 4)
 
         self._back = BackButton()
         self._back.clicked.connect(self.onBack)
-        self._top_layout.addWidget(self._back)
+        top_layout.addWidget(self._back)
 
-        self._layout = QtWidgets.QVBoxLayout()
-        self._layout.setSpacing(8)
-        self._layout.setContentsMargins(0, 0, 16, 16)
-        self._top_layout.addLayout(self._layout)
-        self._top_layout.addStretch()
+        self._show_label = QtWidgets.QLabel()
+        self._show_label.setAlignment(QtCore.Qt.AlignCenter)
+        self._show_label.setStyleSheet("""
+            font-weight: bold;
+            """)
+        top_layout.addWidget(self._show_label)
+
+        layout.addLayout(top_layout)
+
+        scroll_layout = QtWidgets.QVBoxLayout()
+        scroll_layout.setSpacing(8)
+        scroll_layout.setContentsMargins(0, 0, 16, 16)
 
         banner_h_layout = QtWidgets.QHBoxLayout()
         banner_h_layout.setContentsMargins(40, 16, 30, 16)
@@ -138,24 +148,24 @@ class ShowDetails(QtWidgets.QScrollArea):
         banner.setSizePolicy(
             QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Fixed)
         banner.setLayout(banner_h_layout)
-        self._layout.addWidget(banner)
+        scroll_layout.addWidget(banner)
 
         hline = HLine()
         hline.setStyleSheet(
             "margin-left: 38px; "
             "margin-right: 28px; "
             "color: #444;")
-        self._layout.addWidget(hline)
+        scroll_layout.addWidget(hline)
 
         self._episodes_label = SubsectionTitle("Episodes")
         self._episodes_label.setStyleSheet("margin-left: 36px")
-        self._layout.addWidget(self._episodes_label)
+        scroll_layout.addWidget(self._episodes_label)
 
         self._episodes_layout = QtWidgets.QVBoxLayout()
         self._episodes_layout.setContentsMargins(0, 0, 0, 0)
         self._episodes_layout.setSpacing(0)
 
-        self._layout.addLayout(self._episodes_layout)
+        scroll_layout.addLayout(self._episodes_layout)
 
         self._see_all_episodes = QtWidgets.QPushButton("")
         self._see_all_episodes.setStyleSheet("""
@@ -172,20 +182,20 @@ class ShowDetails(QtWidgets.QScrollArea):
         self._see_all_episodes.setSizePolicy(
             QtWidgets.QSizePolicy.Fixed,
             QtWidgets.QSizePolicy.Fixed)
-        self._layout.addWidget(self._see_all_episodes)
+        scroll_layout.addWidget(self._see_all_episodes)
 
         hline = HLine()
         hline.setStyleSheet(
             "margin-left: 38px; "
             "margin-right: 28px; "
             "color: #444")
-        self._layout.addWidget(hline)
+        scroll_layout.addWidget(hline)
 
-        self._layout.addSpacing(8)
+        scroll_layout.addSpacing(8)
 
         self._info_label = SubsectionTitle("Information")
         self._info_label.setStyleSheet("margin-left: 36px")
-        self._layout.addWidget(self._info_label)
+        scroll_layout.addWidget(self._info_label)
 
         grid = QtWidgets.QGridLayout()
         grid.setContentsMargins(28, 0, 16, 0)
@@ -202,17 +212,23 @@ class ShowDetails(QtWidgets.QScrollArea):
         self._language_info = InfoLabel("Language")
         grid.addWidget(self._language_info, 1, 1)
 
-        self._layout.addLayout(grid)
+        scroll_layout.addLayout(grid)
 
         widget = QtWidgets.QWidget()
-        widget.setLayout(self._top_layout)
+        widget.setLayout(scroll_layout)
         widget.setSizePolicy(
             QtWidgets.QSizePolicy.Expanding,
             QtWidgets.QSizePolicy.Expanding)
 
-        self.setFrameShape(QtWidgets.QFrame.NoFrame)
-        self.setWidgetResizable(True)
-        self.setWidget(widget)
+        scroll_layout.addStretch()
+
+        scroll_area = QtWidgets.QScrollArea()
+        scroll_area.setFrameShape(QtWidgets.QFrame.NoFrame)
+        scroll_area.setWidgetResizable(True)
+        scroll_area.setWidget(widget)
+        scroll_area.verticalScrollBar().valueChanged.connect(self.onVertScroll)
+
+        layout.addWidget(scroll_area)
 
     @property
     def id(self):
@@ -296,3 +312,26 @@ class ShowDetails(QtWidgets.QScrollArea):
         else:
             self._main_window.followShow(self._show['id'])
         self.updateFollowState()
+
+    def onVertScroll(self, value):
+        if value > 80:
+            self._show_label.setText(self._show['name'])
+            clr2 = QtGui.QColor("#C8C8C8")
+
+            if value < 100:
+                t = (float(value) - 80) / 20
+                clr = QtGui.QColor.fromRgbF(
+                    clr2.redF(),
+                    clr2.greenF(),
+                    clr2.blueF(),
+                    t)
+            else:
+                clr = clr2
+
+            qss = """
+                font-weight: bold;
+                color: {};
+                """.format(clr.name(QtGui.QColor.HexArgb))
+            self._show_label.setStyleSheet(qss)
+        else:
+            self._show_label.setText("")
