@@ -36,6 +36,7 @@ class ShowDetails(QtWidgets.QScrollArea):
 
         banner_h_layout = QtWidgets.QHBoxLayout()
         banner_h_layout.setContentsMargins(16, 16, 16, 16)
+        banner_h_layout.setSpacing(40)
 
         self._show_artwork = QtWidgets.QLabel()
         self._show_artwork.setSizePolicy(
@@ -44,16 +45,16 @@ class ShowDetails(QtWidgets.QScrollArea):
         banner_h_layout.addWidget(self._show_artwork)
 
         banner_right_layout = QtWidgets.QVBoxLayout()
-        banner_right_layout.setSpacing(2)
+        banner_right_layout.setSpacing(0)
 
-        banner_right_layout.addStretch()
+        banner_right_layout.addSpacing(25)
 
         self._show_title = QtWidgets.QLabel()
         self._show_title.setAlignment(
             QtCore.Qt.AlignLeft | QtCore.Qt.AlignTop)
         self._show_title.setWordWrap(True)
         self._show_title.setSizePolicy(
-            QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Expanding)
+            QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Fixed)
         font = self._show_title.font()
         font.setBold(True)
         font.setPointSizeF(font.pointSize() * 2)
@@ -69,6 +70,38 @@ class ShowDetails(QtWidgets.QScrollArea):
         font.setPointSizeF(font.pointSize() * 1.2)
         self._show_author.setFont(font)
         banner_right_layout.addWidget(self._show_author)
+
+        banner_right_layout.addSpacing(25)
+        self._latest_episode = QtWidgets.QLabel()
+        self._latest_episode.setWordWrap(True)
+        self._latest_episode.setSizePolicy(
+            QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Fixed)
+        self._latest_episode.setStyleSheet("""
+            font-size: 14px;
+            """)
+        self._latest_episode.setFixedHeight(50)
+        self._latest_episode.setAlignment(
+            QtCore.Qt.AlignLeft | QtCore.Qt.AlignTop)
+        banner_right_layout.addWidget(self._latest_episode)
+
+        banner_right_layout.addSpacing(25)
+
+        self._play_latest = QtWidgets.QPushButton("\u25B6  Latest Episode")
+        css = """
+            border-radius: 4px;
+            background-color: #307BF6;
+            border: none;
+            """
+        self._play_latest.setFlat(True)
+        self._play_latest.setStyleSheet(css)
+        self._play_latest.setFixedWidth(150)
+        self._play_latest.setFixedHeight(28)
+        self._play_latest.setContentsMargins(0, 0, 0, 0)
+        font = self._play_latest.font()
+        font.setBold(True)
+        font.setPointSizeF(font.pointSize() * 1.1)
+        self._play_latest.setFont(font)
+        banner_right_layout.addWidget(self._play_latest)
 
         banner_h_layout.addLayout(banner_right_layout)
 
@@ -125,6 +158,11 @@ class ShowDetails(QtWidgets.QScrollArea):
 
         self._show_title.setText(self._show['name'])
         self._show_author.setText(self._show['publisher'])
+
+        latest_episode = self._show['episodes']['items'][0]
+        self._latest_episode.setText(
+            ": ".join([latest_episode['name'], latest_episode['description']])
+        )
 
         for episode in self._show['episodes']['items']:
             widget = EpisodeWidget(episode, parent=self._main_window)
