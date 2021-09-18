@@ -88,22 +88,22 @@ class EpisodeDetails(QtWidgets.QWidget):
 
         banner_right_layout.addSpacing(10)
 
-        self._play_latest = QtWidgets.QPushButton("\u25B6  Play")
+        self._play = QtWidgets.QPushButton("\u25B6  Play")
         css = """
             border-radius: 4px;
             background-color: #307BF6;
             border: none;
+            font-weight: bold;
+            font-size: 14px;
             """
-        self._play_latest.setFlat(True)
-        self._play_latest.setStyleSheet(css)
-        self._play_latest.setFixedWidth(150)
-        self._play_latest.setFixedHeight(28)
-        self._play_latest.setContentsMargins(0, 0, 0, 0)
-        font = self._play_latest.font()
-        font.setBold(True)
-        font.setPointSizeF(font.pointSize() * 1.1)
-        self._play_latest.setFont(font)
-        banner_right_layout.addWidget(self._play_latest)
+        self._play.setFlat(True)
+        self._play.setStyleSheet(css)
+        self._play.setFixedWidth(150)
+        self._play.setFixedHeight(28)
+        self._play.setContentsMargins(0, 0, 0, 0)
+        self._play.setEnabled(False)
+        self._play.clicked.connect(self.onPlay)
+        banner_right_layout.addWidget(self._play)
 
         banner_h_layout.addLayout(banner_right_layout)
 
@@ -211,6 +211,8 @@ class EpisodeDetails(QtWidgets.QWidget):
         self._language_info.set(lang)
         self._rating_info.set(utils.rating(self._episode['explicit']))
 
+        self._play.setEnabled(True)
+
     def onBack(self):
         self._main_window.onBack()
 
@@ -244,3 +246,7 @@ class EpisodeDetails(QtWidgets.QWidget):
             self._episode_label.setStyleSheet(qss)
         else:
             self._episode_label.setText("")
+
+    def onPlay(self):
+        if self._episode is not None:
+            self._main_window.startPlayback([self._episode['uri']])

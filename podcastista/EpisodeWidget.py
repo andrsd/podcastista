@@ -43,6 +43,7 @@ class EpisodeWidget(QtWidgets.QWidget):
         font = self._play.font()
         font.setPointSizeF(font.pointSize() * 1.3)
         self._play.setFont(font)
+        self._play.clicked.connect(self.onPlay)
         self._layout.addWidget(self._play)
 
         if artwork:
@@ -142,3 +143,6 @@ class EpisodeWidget(QtWidgets.QWidget):
         scaled_img = self._img.scaledToWidth(self.ARTWORK_WD)
         pixmap = QtGui.QPixmap.fromImage(scaled_img)
         self._artwork.setPixmap(pixmap)
+
+    def onPlay(self):
+        self._main_window.startPlayback([self._episode['uri']])

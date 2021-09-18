@@ -524,3 +524,8 @@ class MainWindow(QtWidgets.QMainWindow):
         elif id == self.LATEST_EPISODES_ID:
             self._stacked_layout.setCurrentWidget(self._episodes_tab)
         self._history = []
+
+    def startPlayback(self, uris):
+        self.spotify.start_playback(
+            device_id=self._active_device_id,
+            uris=uris)

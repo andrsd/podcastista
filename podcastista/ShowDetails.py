@@ -103,16 +103,16 @@ class ShowDetails(QtWidgets.QWidget):
             border-radius: 4px;
             background-color: #307BF6;
             border: none;
+            font-weight: bold;
+            font-size: 14px;
             """
         self._play_latest.setFlat(True)
         self._play_latest.setStyleSheet(css)
         self._play_latest.setFixedWidth(150)
         self._play_latest.setFixedHeight(28)
         self._play_latest.setContentsMargins(0, 0, 0, 0)
-        font = self._play_latest.font()
-        font.setBold(True)
-        font.setPointSizeF(font.pointSize() * 1.1)
-        self._play_latest.setFont(font)
+        self._play_latest.setEnabled(False)
+        self._play_latest.clicked.connect(self.onPlay)
         button_layout.addWidget(self._play_latest)
 
         button_layout.addStretch()
@@ -286,6 +286,8 @@ class ShowDetails(QtWidgets.QWidget):
         self._language_info.set(", ".join(langs))
         self._rating_info.set(utils.rating(self._show['explicit']))
 
+        self._play_latest.setEnabled(True)
+
     def onBack(self):
         self._main_window.onBack()
 
@@ -338,3 +340,8 @@ class ShowDetails(QtWidgets.QWidget):
             self._show_label.setStyleSheet(qss)
         else:
             self._show_label.setText("")
+
+    def onPlay(self):
+        if self._show is not None:
+            episode = self._show['episodes']['items'][0]
+            self._main_window.startPlayback([episode['uri']])
