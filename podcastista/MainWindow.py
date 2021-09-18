@@ -15,6 +15,7 @@ from podcastista.ShowsTab import ShowsTab
 from podcastista.SearchTab import SearchTab
 from podcastista.ShowDetails import ShowDetails
 from podcastista.EpisodeDetails import EpisodeDetails
+from podcastista.Player import Player
 
 
 WINDOW_TITLE = "Podcastista"
@@ -47,11 +48,6 @@ class MainWindow(QtWidgets.QMainWindow):
         self._spotify = None
         # my Spotify profile
         self._me = None
-        # Spotify devices
-        self._devices = None
-        # active Spotify device Id
-        self._active_device_id = None
-        self._volume = None
         self._settings = QtCore.QSettings()
         self._about_dlg = None
         self._window_menu = None
@@ -171,16 +167,30 @@ class MainWindow(QtWidgets.QMainWindow):
         self._stacked_layout.addWidget(self._show)
         self._stacked_layout.addWidget(self._episode_detail)
 
-        w = QtWidgets.QWidget()
-        w.setLayout(self._stacked_layout)
+        self._right = QtWidgets.QWidget()
+        self._right.setLayout(self._stacked_layout)
 
         self._splitter = QtWidgets.QSplitter(self)
         self._splitter.setOrientation(QtCore.Qt.Horizontal)
         self._splitter.setChildrenCollapsible(False)
         self._splitter.addWidget(self._left)
-        self._splitter.addWidget(w)
+        self._splitter.addWidget(self._right)
 
-        self.setCentralWidget(self._splitter)
+        self._player = Player(self)
+        self._player.setSizePolicy(QtWidgets.QSizePolicy.Expanding,
+                                   QtWidgets.QSizePolicy.Fixed)
+        self._player.setFixedHeight(96)
+
+        layout = QtWidgets.QVBoxLayout()
+        layout.setContentsMargins(0, 0, 0, 0)
+        layout.setSpacing(0)
+        layout.addWidget(self._splitter)
+        layout.addWidget(self._player)
+
+        w = QtWidgets.QWidget()
+        w.setLayout(layout)
+
+        self.setCentralWidget(w)
 
         self.setMinimumWidth(780)
         self.setMinimumHeight(480)
@@ -212,14 +222,14 @@ class MainWindow(QtWidgets.QMainWindow):
         self._play_pause = self._controls_menu.addAction(
             "Play", self.onPlayPause, "Space")
         self._next = self._controls_menu.addAction(
-            "Next", self.onNext, "Ctrl+Right")
+            "Next", self._player.onNext, "Ctrl+Right")
         self._previous = self._controls_menu.addAction(
-            "Previous", self.onPrevious, "Ctrl+Left")
+            "Previous", self._player.onPrev, "Ctrl+Left")
         self._controls_menu.addSeparator()
         self._volume_up = self._controls_menu.addAction(
-            "Increase Volume", self.onVolumeUp, "Ctrl+Up")
+            "Increase Volume", self._player.onVolumeUp, "Ctrl+Up")
         self._volume_down = self._controls_menu.addAction(
-            "Decrease Volume", self.onVolumeDown, "Ctrl+Down")
+            "Decrease Volume", self._player.onVolumeDown, "Ctrl+Down")
         self._controls_menu.addSeparator()
 
         if platform.system() == "Darwin":
@@ -242,45 +252,11 @@ class MainWindow(QtWidgets.QMainWindow):
         """
         Start/Pause the playback
         """
-        cpb = self._spotify.current_playback()
-        if cpb['is_playing'] is True:
-            self._spotify.pause_playback(device_id=self._active_device_id)
+        if self._player.cpb['is_playing'] is True:
             self._play_pause.setText("Play")
-            self._play_pause_button.setIcon(Assets().play_icon)
         else:
-            self._spotify.start_playback(device_id=self._active_device_id)
             self._play_pause.setText("Pause")
-            self._play_pause_button.setIcon(Assets().pause_icon)
-
-    def onNext(self):
-        """
-        Skip to the next track
-        """
-        pass
-
-    def onPrevious(self):
-        """
-        Jump to the previous track
-        """
-        pass
-
-    def onVolumeUp(self):
-        """
-        Increase volume
-        """
-        pass
-
-    def onVolumeDown(self):
-        """
-        Decrease volume
-        """
-        pass
-
-    def onVolumeChanged(self, value):
-        """
-        Called when volume was changed
-        """
-        pass
+        self._player.onPlayPause()
 
     def onAbout(self):
         """
@@ -348,6 +324,8 @@ class MainWindow(QtWidgets.QMainWindow):
         self._settings.setValue("history", self._history)
         self._settings.endGroup()
 
+        self._settings.setValue("device_id", self._player.active_device_id)
+
     def readSettings(self):
         """
         Read settings
@@ -395,15 +373,7 @@ class MainWindow(QtWidgets.QMainWindow):
 
         self._me = self._spotify.me()
 
-        # get active playback device and save its state
-        devs = self._spotify.devices()
-        self._devices = []
-        for d in devs['devices']:
-            self._devices.append(d)
-            if d['is_active'] is True:
-                self._active_device_id = d['id']
-                self._volume = d['volume_percent']
-
+        self._player.update()
         self.loadData()
 
         self._settings.beginGroup("MainWindow")
@@ -527,5 +497,5 @@ class MainWindow(QtWidgets.QMainWindow):
 
     def startPlayback(self, uris):
         self.spotify.start_playback(
-            device_id=self._active_device_id,
+            device_id=self._player.active_device_id,
             uris=uris)

@@ -6,11 +6,23 @@ def msToTime(ms):
     secs = int(ms / 1000)
     mins = int(secs / 60)
     if mins < 60:
-        return str(int(ms / 1000 / 60)) + " mins"
+        return str(mins) + " mins"
     else:
         hrs = int(mins / 60)
         mins = int(mins % 60)
         return str(hrs) + "h " + str(mins) + "m"
+
+
+def msToPlayTime(ms):
+    """ Convert milliseconds to play time"""
+    secs = int(ms / 1000)
+    mins = int(secs / 60)
+    if mins < 60:
+        return "{}:{:02d}".format(mins, secs % 60)
+    else:
+        hrs = int(mins / 60)
+        mins = int(mins % 60)
+        return "{}:{:02d}:{:02d}".format(hrs, mins, secs % 60)
 
 
 def dateToStr(date):
