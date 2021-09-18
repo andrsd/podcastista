@@ -146,6 +146,19 @@ class MainWindow(QtWidgets.QMainWindow):
 
         left_layout.addStretch()
 
+        powered_by_layout = QtWidgets.QHBoxLayout()
+
+        powered_by_layout.addStretch()
+
+        powered_by_label = QtWidgets.QLabel("Powered by")
+        powered_by_layout.addWidget(powered_by_label, 0, QtCore.Qt.AlignRight)
+
+        spotify_logo = QtWidgets.QLabel()
+        spotify_logo.setPixmap(Assets().spotify_logo.pixmap(80, 24))
+        powered_by_layout.addWidget(spotify_logo, 0, QtCore.Qt.AlignRight)
+
+        left_layout.addLayout(powered_by_layout)
+
         self._left = QtWidgets.QWidget()
         self._left.setSizePolicy(QtWidgets.QSizePolicy.Expanding,
                                  QtWidgets.QSizePolicy.Expanding)
