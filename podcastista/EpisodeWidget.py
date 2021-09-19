@@ -6,6 +6,8 @@ from podcastista.ClickableLabel import ClickableLabel
 
 class EpisodeWidget(QtWidgets.QWidget):
 
+    play = QtCore.pyqtSignal(object)
+
     ARTWORK_HT = 100
     ARTWORK_WD = 100
     DESCRIPTION_HT = 32
@@ -147,7 +149,7 @@ class EpisodeWidget(QtWidgets.QWidget):
         self._artwork.setPixmap(pixmap)
 
     def onPlay(self):
-        self._main_window.startPlayback([self._episode['uri']])
+        self.play.emit(self._episode)
 
     def onTitleClicked(self):
         self.onClicked()

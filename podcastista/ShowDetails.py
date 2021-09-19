@@ -21,6 +21,7 @@ class ShowDetails(QtWidgets.QWidget):
         super().__init__()
         self._main_window = parent
         self._show = None
+        self._episode_idx = {}
 
         layout = QtWidgets.QVBoxLayout(self)
         layout.setSpacing(0)
@@ -113,7 +114,7 @@ class ShowDetails(QtWidgets.QWidget):
         self._play_latest.setFixedHeight(28)
         self._play_latest.setContentsMargins(0, 0, 0, 0)
         self._play_latest.setEnabled(False)
-        self._play_latest.clicked.connect(self.onPlay)
+        self._play_latest.clicked.connect(self.onPlayLatest)
         button_layout.addWidget(self._play_latest)
 
         button_layout.addStretch()
@@ -262,8 +263,11 @@ class ShowDetails(QtWidgets.QWidget):
             ": ".join([latest_episode['name'], latest_episode['description']])
         )
 
-        for episode in self._show['episodes']['items'][0:8]:
+        self._episode_idx = {}
+        for idx, episode in enumerate(self._show['episodes']['items'][0:8]):
+            self._episode_idx[episode['id']] = idx
             widget = EpisodeWidget(episode, parent=self._main_window)
+            widget.play.connect(self.onPlayFromEpisode)
             self._episodes_layout.addWidget(widget)
 
             hline = HLine()
@@ -342,7 +346,14 @@ class ShowDetails(QtWidgets.QWidget):
         else:
             self._show_label.setText("")
 
-    def onPlay(self):
+    def onPlayLatest(self):
         if self._show is not None:
             episode = self._show['episodes']['items'][0]
             self._main_window.startPlayback([episode['uri']])
+
+    def onPlayFromEpisode(self, episode):
+        start_idx = self._episode_idx[episode['id']]
+        uris = []
+        for ep in self._show['episodes']['items'][start_idx:8]:
+            uris.append(ep['uri'])
+        self._main_window.startPlayback(uris)

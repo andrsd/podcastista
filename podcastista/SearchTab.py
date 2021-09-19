@@ -121,9 +121,16 @@ class SearchTab(QtWidgets.QWidget):
 
             for episode in self._searcher.episodes['episodes']['items']:
                 if episode is not None:
-                    widget = EpisodeWidget(episode, artwork=True, parent=self._main_window)
+                    widget = EpisodeWidget(
+                        episode,
+                        artwork=True,
+                        parent=self._main_window)
+                    widget.play.connect(self.onPlayEpisode)
                     self._episodes_layout.addWidget(widget)
 
                     self._episodes_layout.addWidget(HLine())
 
             need_hbar = True
+
+    def onPlayEpisode(self, episode):
+        self._main_window.startPlayback([episode['uri']])

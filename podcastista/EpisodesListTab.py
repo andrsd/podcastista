@@ -33,6 +33,8 @@ class EpisodesListTab(QtWidgets.QScrollArea):
     def __init__(self, parent):
         super().__init__()
         self._main_window = parent
+        self._episode_idx = {}
+        self._episodes = []
 
         self._layout = QtWidgets.QVBoxLayout(self)
         self._layout.setSpacing(0)
@@ -68,6 +70,9 @@ class EpisodesListTab(QtWidgets.QScrollArea):
             key=lambda k: k['release_date'],
             reverse=True)
 
+        self._episode_idx = {}
+        self._episodes = []
+        idx = 0
         for episode in sorted_episodes:
             # filter out played episodes
             display = True
@@ -76,10 +81,14 @@ class EpisodesListTab(QtWidgets.QScrollArea):
                 display = False
 
             if display:
+                self._episodes.append(episode)
+                self._episode_idx[episode['id']] = idx
+                idx = idx + 1
                 w = EpisodeWidget(
                     episode,
                     artwork=True,
                     parent=self._main_window)
+                w.play.connect(self.onPlayFromEpisode)
                 self._layout.addWidget(w)
 
                 hline = HLine()
@@ -88,3 +97,10 @@ class EpisodesListTab(QtWidgets.QScrollArea):
                     "margin-right: 38px; "
                     "color: #444")
                 self._layout.addWidget(hline)
+
+    def onPlayFromEpisode(self, episode):
+        start_idx = self._episode_idx[episode['id']]
+        uris = []
+        for ep in self._episodes[start_idx:]:
+            uris.append(ep['name'])
+        self._main_window.startPlayback(uris)
