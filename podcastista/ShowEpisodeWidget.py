@@ -1,7 +1,7 @@
 from PyQt5 import QtWidgets, QtGui, QtCore
 from podcastista.assets import Assets
 from podcastista import utils
-
+from podcastista.ClickableLabel import ClickableLabel
 
 class ShowEpisodeWidget(QtWidgets.QWidget):
 
@@ -51,7 +51,7 @@ class ShowEpisodeWidget(QtWidgets.QWidget):
         self._date.setStyleSheet("color: #888")
         self._layout.addWidget(self._date)
 
-        self._episode_name = QtWidgets.QLabel(self._episode['name'])
+        self._episode_name = ClickableLabel(self._episode['name'])
         self._episode_name.setWordWrap(True)
         self._episode_name.setFixedWidth(self.ARTWORK_WD)
         self._episode_name.setFixedHeight(62)
@@ -62,13 +62,14 @@ class ShowEpisodeWidget(QtWidgets.QWidget):
         font.setPointSizeF(font.pointSize() * 1.3)
         self._episode_name.setFont(font)
         self._episode_name.setStyleSheet("color: #fff")
+        self._episode_name.clicked.connect(self.onEpisodeNameClicked)
         self._layout.addWidget(self._episode_name)
 
-        self._title = QtWidgets.QLabel(self._show['name'])
+        self._title = ClickableLabel(self._show['name'])
         self._title.setFixedWidth(self.ARTWORK_WD)
         self._title.setFixedHeight(self.LINE_HT)
-        font = self._title.font()
-        self._title.setFont(font)
+        self._title.setStyleSheet("color: #307BF6")
+        self._title.clicked.connect(self.onTitleClicked)
         self._layout.addWidget(self._title)
 
         self.setSizePolicy(
@@ -93,3 +94,9 @@ class ShowEpisodeWidget(QtWidgets.QWidget):
         scaled_img = self._img.scaledToWidth(self.ARTWORK_WD)
         pixmap = QtGui.QPixmap.fromImage(scaled_img)
         self._artwork.setPixmap(pixmap)
+
+    def onEpisodeNameClicked(self):
+        self._main_window.viewEpisode(self._episode)
+
+    def onTitleClicked(self):
+        self._main_window.viewShow(self._show['id'])

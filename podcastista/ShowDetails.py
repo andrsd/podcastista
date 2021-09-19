@@ -5,6 +5,7 @@ from podcastista.HLine import HLine
 from podcastista.BackButton import BackButton
 from podcastista.SubsectionTitle import SubsectionTitle
 from podcastista.InfoLabel import InfoLabel
+from podcastista.ClickableLabel import ClickableLabel
 from podcastista import utils
 
 
@@ -167,22 +168,22 @@ class ShowDetails(QtWidgets.QWidget):
 
         scroll_layout.addLayout(self._episodes_layout)
 
-        self._see_all_episodes = QtWidgets.QPushButton("")
+        see_all_layout = QtWidgets.QHBoxLayout()
+        see_all_layout.addSpacing(38)
+
+        self._see_all_episodes = ClickableLabel("")
+        self._see_all_episodes.setContentsMargins(0, 4, 0, 4)
         self._see_all_episodes.setStyleSheet("""
-            QPushButton {
-                font-size: 13px;
-                margin-left: 38px;
-            }
-            QPushButton:hover {
-                color: #307BF6;
-            }
+            color: #307BF6;
             """)
-        self._see_all_episodes.setFlat(True)
-        self._see_all_episodes.setFixedHeight(28)
         self._see_all_episodes.setSizePolicy(
             QtWidgets.QSizePolicy.Fixed,
             QtWidgets.QSizePolicy.Fixed)
-        scroll_layout.addWidget(self._see_all_episodes)
+        see_all_layout.addWidget(self._see_all_episodes)
+
+        see_all_layout.addStretch()
+
+        scroll_layout.addLayout(see_all_layout)
 
         hline = HLine()
         hline.setStyleSheet(

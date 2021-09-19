@@ -49,9 +49,15 @@ class ShowWidget(QtWidgets.QWidget):
             QtWidgets.QSizePolicy.Fixed, QtWidgets.QSizePolicy.Fixed)
         self.setLayout(self._layout)
         self.setAttribute(QtCore.Qt.WA_StyledBackground, True)
-        self.setStyleSheet(
-            "ShowWidget { background-color: #2f2f2f } "
-            "ShowWidget:hover { background-color: #363636 }")
+        self.setStyleSheet("""
+            ShowWidget {
+                background-color: #2f2f2f
+            }
+            ShowWidget:hover {
+                background-color: #363636;
+                text-decoration: underline;
+            }
+            """)
 
     def mouseReleaseEvent(self, event):
 

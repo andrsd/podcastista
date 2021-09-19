@@ -1,6 +1,7 @@
 from PyQt5 import QtWidgets, QtCore, QtGui
 from podcastista.assets import Assets
 from podcastista import utils
+from podcastista.ClickableLabel import ClickableLabel
 
 
 class EpisodeWidget(QtWidgets.QWidget):
@@ -82,7 +83,7 @@ class EpisodeWidget(QtWidgets.QWidget):
 
         left_layout.addSpacing(2)
 
-        self._title = QtWidgets.QLabel(self._episode['name'])
+        self._title = ClickableLabel(self._episode['name'])
         self._title.setWordWrap(True)
         self._title.setSizePolicy(
             QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Expanding)
@@ -92,6 +93,7 @@ class EpisodeWidget(QtWidgets.QWidget):
         if not self._played:
             font.setBold(True)
         self._title.setFont(font)
+        self._title.clicked.connect(self.onTitleClicked)
         left_layout.addWidget(self._title)
 
         self._description = QtWidgets.QLabel(self._episode['description'])
@@ -146,3 +148,6 @@ class EpisodeWidget(QtWidgets.QWidget):
 
     def onPlay(self):
         self._main_window.startPlayback([self._episode['uri']])
+
+    def onTitleClicked(self):
+        self.onClicked()
