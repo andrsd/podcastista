@@ -20,6 +20,7 @@ class FillThread(QtCore.QThread):
             show_episodes = self._spotify.show_episodes(show['id'], limit=20)
             for episode in show_episodes['items']:
                 self._episodes.append(episode)
+
     @property
     def episodes(self):
         return self._episodes

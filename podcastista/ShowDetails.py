@@ -285,8 +285,8 @@ class ShowDetails(QtWidgets.QWidget):
         self._publisher_info.set(self._show['publisher'])
         self._episodes_info.set(str(self._show['total_episodes']))
         langs = []
-        for l in self._show['languages']:
-            locale = QtCore.QLocale(l)
+        for lang in self._show['languages']:
+            locale = QtCore.QLocale(lang)
             langs.append(QtCore.QLocale.languageToString(locale.language()))
         self._language_info.set(", ".join(langs))
         self._rating_info.set(utils.rating(self._show['explicit']))

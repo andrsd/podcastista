@@ -537,10 +537,10 @@ class MainWindow(QtWidgets.QMainWindow):
 
     def eventFilter(self, source, event):
         if (event.type() == QtCore.QEvent.FocusOut and
-            source is self._search_box):
+                source is self._search_box):
             self.onSearchFocusOut()
         elif (event.type() == QtCore.QEvent.FocusIn and
-            source is self._search_box):
+                source is self._search_box):
             self.onSearchFocusIn()
         return super(QtWidgets.QMainWindow, self).eventFilter(source, event)
 

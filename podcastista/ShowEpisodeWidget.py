@@ -3,6 +3,7 @@ from podcastista.assets import Assets
 from podcastista import utils
 from podcastista.ClickableLabel import ClickableLabel
 
+
 class ShowEpisodeWidget(QtWidgets.QWidget):
 
     ARTWORK_WD = 220
