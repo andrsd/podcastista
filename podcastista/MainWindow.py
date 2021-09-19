@@ -388,18 +388,39 @@ class MainWindow(QtWidgets.QMainWindow):
 
         self._player.update()
         self.loadData()
+        self._restoreState()
 
+    def _restoreState(self):
+        act_tab = None
         self._settings.beginGroup("MainWindow")
-        if self._stacked_layout.currentWidget() == self._show:
+        if self._stacked_layout.currentWidget() == self._listen_now_tab:
+            act_tab = self._listen_now_tab
+        elif self._stacked_layout.currentWidget() == self._shows_tab:
+            act_tab = self._shows_tab
+        elif self._stacked_layout.currentWidget() == self._episodes_tab:
+            act_tab = self._episodes_tab
+        elif self._stacked_layout.currentWidget() == self._show:
             show_id = self._settings.value("active_show_id")
             if show_id is not None:
                 self._show.fill(show_id)
+            act_tab = self._stacked_layout.widget(self._history[0])
         elif self._stacked_layout.currentWidget() == self._episode_detail:
             episode_id = self._settings.value("active_episode_id")
             if episode_id is not None:
                 episode = self._spotify.episode(episode_id)
                 self._episode_detail.fill(episode)
+            act_tab = self._stacked_layout.widget(self._history[0])
         self._settings.endGroup()
+
+        if act_tab == self._listen_now_tab:
+            self._left_listen_now.setChecked(True)
+            self._left_listen_now.setFocus(QtCore.Qt.OtherFocusReason)
+        elif act_tab == self._shows_tab:
+            self._left_shows.setChecked(True)
+            self._left_shows.setFocus(QtCore.Qt.OtherFocusReason)
+        elif act_tab == self._episodes_tab:
+            self._left_latest_episodes.setChecked(True)
+            self._left_latest_episodes.setFocus(QtCore.Qt.OtherFocusReason)
 
     def onNetworkReply(self, reply):
         """
