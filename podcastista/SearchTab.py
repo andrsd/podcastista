@@ -121,7 +121,7 @@ class SearchTab(QtWidgets.QWidget):
 
             for episode in self._searcher.episodes['episodes']['items']:
                 if episode is not None:
-                    widget = EpisodeWidget(episode, parent=self._main_window)
+                    widget = EpisodeWidget(episode, artwork=True, parent=self._main_window)
                     self._episodes_layout.addWidget(widget)
 
                     self._episodes_layout.addWidget(HLine())
