@@ -64,7 +64,7 @@ class EpisodeWidget(QtWidgets.QWidget):
             self._img = None
 
         left_layout = QtWidgets.QVBoxLayout()
-        left_layout.setSpacing(8)
+        left_layout.setSpacing(6)
 
         self._date = QtWidgets.QLabel(
             utils.dateToStr(self._episode['release_date']))
@@ -86,7 +86,7 @@ class EpisodeWidget(QtWidgets.QWidget):
         self._title.setWordWrap(True)
         self._title.setSizePolicy(
             QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Expanding)
-        self._title.setMaximumHeight(2 * self.LINE_HT)
+        self._title.setMaximumHeight(2 * self.LINE_HT + 6)
         font = self._title.font()
         font.setPointSizeF(font.pointSize() * 1.2)
         if not self._played:
