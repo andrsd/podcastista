@@ -100,6 +100,7 @@ class MainWindow(QtWidgets.QMainWindow):
         self._search_box.setFixedHeight(25)
         self._search_box.setStyleSheet(search_ss)
         self._search_box.setAttribute(QtCore.Qt.WA_MacShowFocusRect, 0)
+        self._search_box.installEventFilter(self)
         self._search_box.returnPressed.connect(self.onSearch)
         self._search_box.textChanged.connect(self.onSearchTextChanged)
         left_layout.addWidget(self._search_box)
@@ -533,3 +534,18 @@ class MainWindow(QtWidgets.QMainWindow):
         self.spotify.start_playback(
             device_id=self._player.active_device_id,
             uris=uris)
+
+    def eventFilter(self, source, event):
+        if (event.type() == QtCore.QEvent.FocusOut and
+            source is self._search_box):
+            self.onSearchFocusOut()
+        elif (event.type() == QtCore.QEvent.FocusIn and
+            source is self._search_box):
+            self.onSearchFocusIn()
+        return super(QtWidgets.QMainWindow, self).eventFilter(source, event)
+
+    def onSearchFocusIn(self):
+        self._stacked_layout.setCurrentWidget(self._search_tab)
+
+    def onSearchFocusOut(self):
+        pass

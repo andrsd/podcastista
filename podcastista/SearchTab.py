@@ -34,7 +34,7 @@ class SearchThread(QtCore.QThread):
         return self._episodes
 
 
-class SearchTab(QtWidgets.QScrollArea):
+class SearchTab(QtWidgets.QWidget):
     """
     Widget on main window for search
     """
@@ -43,20 +43,28 @@ class SearchTab(QtWidgets.QScrollArea):
         super().__init__()
         self._main_window = parent
 
-        self._layout = QtWidgets.QVBoxLayout(self)
+        # empty widget
+        self._empty_widget = QtWidgets.QWidget()
 
+        # search results widget
+        self._layout = QtWidgets.QVBoxLayout()
         widget = QtWidgets.QWidget()
         widget.setLayout(self._layout)
         widget.setSizePolicy(
             QtWidgets.QSizePolicy.Expanding,
             QtWidgets.QSizePolicy.Expanding)
 
-        self.setFrameShape(QtWidgets.QFrame.NoFrame)
-        self.setWidgetResizable(True)
-        self.setWidget(widget)
+        self._results_widget = QtWidgets.QScrollArea()
+        self._results_widget.setFrameShape(QtWidgets.QFrame.NoFrame)
+        self._results_widget.setWidgetResizable(True)
+        self._results_widget.setWidget(widget)
 
         self._shows_layout = FlowLayout()
         self._episodes_layout = QtWidgets.QVBoxLayout()
+
+        self._stacked_layout = QtWidgets.QStackedLayout(self)
+        self._stacked_layout.addWidget(self._empty_widget)
+        self._stacked_layout.addWidget(self._results_widget)
 
     def search(self, text):
         self._searcher = SearchThread(self._main_window.spotify, text)
@@ -64,6 +72,8 @@ class SearchTab(QtWidgets.QScrollArea):
         self._searcher.start()
 
     def clear(self):
+        self._stacked_layout.setCurrentWidget(self._empty_widget)
+
         while self._shows_layout.count() > 0:
             item = self._shows_layout.takeAt(0)
             if item.widget() is not None:
@@ -80,6 +90,8 @@ class SearchTab(QtWidgets.QScrollArea):
                 item.widget().deleteLater()
 
     def onSearchFinished(self):
+        self._stacked_layout.setCurrentWidget(self._results_widget)
+
         while self._layout.count() > 0:
             item = self._layout.takeAt(0)
             if item.widget() is not None:
