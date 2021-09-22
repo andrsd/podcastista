@@ -31,7 +31,7 @@ pytest .
 Run code checks with:
 
 ```
-flake8 .
+flake8 podcastista
 ```
 
 Run unit tests with coverage report:
