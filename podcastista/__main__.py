@@ -46,7 +46,7 @@ def main():
     qapp.setAttribute(QtCore.Qt.AA_UseHighDpiPixmaps)
     palette = colors.create_palette()
     qapp.setPalette(palette)
-    qapp.setQuitOnLastWindowClosed(True)
+    qapp.setQuitOnLastWindowClosed(False)
 
     server_thread = server.ServerThread()
     server_thread.start()
