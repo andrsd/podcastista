@@ -112,17 +112,44 @@ class EpisodeWidget(QtWidgets.QWidget):
 
         self._layout.addLayout(left_layout)
 
+        self._layout.addSpacing(10)
+
+        duration_layout = QtWidgets.QVBoxLayout()
+
+        duration_layout.addStretch()
+
+        resume_pt = episode['resume_point']
+        progress_visible = False
         if self._played:
             time = "Played"
-        else:
+        elif resume_pt['resume_position_ms'] == 0:
             time = utils.msToTime(self._episode['duration_ms'])
+        else:
+            left_ms = episode['duration_ms'] - resume_pt['resume_position_ms']
+            time = utils.msToTime(left_ms) + " left"
+            progress_visible = True
+
         self._duration = QtWidgets.QLabel(time)
         self._duration.setSizePolicy(
             QtWidgets.QSizePolicy.Fixed, QtWidgets.QSizePolicy.Expanding)
         self._duration.setFixedWidth(self.TIME_WD)
         self._duration.setAlignment(QtCore.Qt.AlignCenter)
 
-        self._layout.addWidget(self._duration)
+        duration_layout.addWidget(self._duration)
+
+        self._duration_progress = QtWidgets.QProgressBar()
+        self._duration_progress.setVisible(progress_visible)
+        self._duration_progress.setRange(0, episode['duration_ms'])
+        self._duration_progress.setValue(resume_pt['resume_position_ms'])
+        self._duration_progress.setTextVisible(False)
+        self._duration_progress.setSizePolicy(
+            QtWidgets.QSizePolicy.Fixed, QtWidgets.QSizePolicy.Fixed)
+
+        duration_layout.addWidget(self._duration_progress)
+
+        duration_layout.addStretch()
+
+        self._layout.addLayout(duration_layout)
 
         self.setSizePolicy(
             QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Fixed)
