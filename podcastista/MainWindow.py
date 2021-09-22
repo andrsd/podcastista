@@ -250,6 +250,8 @@ class MainWindow(QtWidgets.QMainWindow):
             self._window_menu = self._menubar.addMenu("Window")
             self._minimize = self._window_menu.addAction(
                 "Minimize", self.onMinimize, "Ctrl+M")
+            self._zoom = self._window_menu.addAction(
+                "Zoom", self.onZoom)
             self._window_menu.addSeparator()
             self._bring_all_to_front = self._window_menu.addAction(
                 "Bring All to Front", self.onBringAllToFront)
@@ -285,6 +287,12 @@ class MainWindow(QtWidgets.QMainWindow):
         Called when WindowMinimize is triggered
         """
         self.showMinimized()
+
+    def onZoom(self):
+        if self.isMaximized():
+            self.showNormal()
+        else:
+            self.showMaximized()
 
     def onBringAllToFront(self):
         """
