@@ -32,7 +32,7 @@ exe = EXE(
     a.scripts,
     [],
     exclude_binaries=True,
-    name='Podcastista',
+    name=consts.APP_NAME,
     debug=False,
     bootloader_ignore_signals=False,
     strip=False,
@@ -52,7 +52,7 @@ coll = COLLECT(
     strip=False,
     upx=True,
     upx_exclude=[],
-    name='Podcastista')
+    name=consts.APP_NAME)
 
 if sys.platform == 'darwin':
     app = BUNDLE(

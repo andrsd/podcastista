@@ -3,7 +3,7 @@ from podcastista import consts
 
 setup(
     name='Podcastista',
-    version='1.0',
+    version=consts.VERSION,
     author='David Andrš',
     author_email='andrsd@gmail.com',
     url='https://github.com/andrsd/podcastista',
