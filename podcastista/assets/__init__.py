@@ -38,11 +38,7 @@ class Assets:
         else:
             path = os.path.dirname(__file__)
 
-        self.music_dir = os.path.join(path, 'music')
-
         icons_dir = os.path.join(path, 'icons')
-        self.author_icon = QtGui.QIcon(os.path.join(icons_dir, "author.svg"))
-        self.piece_icon = QtGui.QIcon(os.path.join(icons_dir, "vinyl.svg"))
         self.prev_icon = QtGui.QIcon(os.path.join(icons_dir, "prev.svg"))
         self.next_icon = QtGui.QIcon(os.path.join(icons_dir, "next.svg"))
         self.play_icon = QtGui.QIcon(os.path.join(icons_dir, "play.svg"))

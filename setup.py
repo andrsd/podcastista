@@ -28,6 +28,6 @@ setup(
     },
     include_package_data=True,
     package_data={
-        'podcastista.assets': ['*.yml', '*.svg']
+        'podcastista.assets': ['*.svg']
     },
 )
