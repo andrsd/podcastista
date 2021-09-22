@@ -227,10 +227,12 @@ class MainWindow(QtWidgets.QMainWindow):
             "About...", self.onAbout)
 
         self._view_menu = self._menubar.addMenu("View")
-        self._view_episodes = self._view_menu.addAction(
-            "Episodes", self.onViewEpisodes, "Ctrl+1")
+        self._view_listen_now = self._view_menu.addAction(
+            "Listen now", self.onViewListenNow, "Ctrl+1")
         self._view_shows = self._view_menu.addAction(
             "Shows", self.onViewShows, "Ctrl+2")
+        self._view_episodes = self._view_menu.addAction(
+            "Episodes", self.onViewEpisodes, "Ctrl+3")
 
         self._controls_menu = self._menubar.addMenu("Controls")
         self._play_pause = self._controls_menu.addAction(
@@ -474,10 +476,19 @@ class MainWindow(QtWidgets.QMainWindow):
         self._listen_now_tab.fill()
 
     def onViewEpisodes(self):
+        self._left_latest_episodes.setChecked(True)
+        self._left_latest_episodes.setFocus(QtCore.Qt.OtherFocusReason)
         self._stacked_layout.setCurrentWidget(self._episodes_tab)
 
     def onViewShows(self):
+        self._left_shows.setChecked(True)
+        self._left_shows.setFocus(QtCore.Qt.OtherFocusReason)
         self._stacked_layout.setCurrentWidget(self._shows_tab)
+
+    def onViewListenNow(self):
+        self._left_listen_now.setChecked(True)
+        self._left_listen_now.setFocus(QtCore.Qt.OtherFocusReason)
+        self._stacked_layout.setCurrentWidget(self._listen_now_tab)
 
     def viewShow(self, show_id):
         """
