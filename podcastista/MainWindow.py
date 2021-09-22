@@ -92,7 +92,7 @@ class MainWindow(QtWidgets.QMainWindow):
             QLineEdit:focus {
               border-radius: 4px;
               background-color: #555;
-              border: 3px solid #006040;
+              border: 3px solid #307BF6;
             }"""
         self._search_box = QtWidgets.QLineEdit()
         self._search_box.setPlaceholderText("Search")
