@@ -205,13 +205,27 @@ class Player(QtWidgets.QLabel):
         self._next_button.setEnabled(True)
         self._volume.setEnabled(True)
 
+        self._device_menu = QtWidgets.QMenu()
+        self._device_action_group = QtWidgets.QActionGroup(self)
+        self._device_action_group.setExclusive(True)
+        self._device_action_group.triggered.connect(self.onDeviceSelected)
+        self._device_actions = []
         devs = self._spotify.devices()
         self._devices = []
         for d in devs['devices']:
+            # TODO: add an icon based on the device type
+            action = self._device_menu.addAction(d['name'])
+            action.setCheckable(True)
+            self._device_actions.append(action)
+            self._device_action_group.addAction(action)
+
             self._devices.append(d)
             if d['is_active'] is True:
                 self._active_device_id = d['id']
                 self._volume.setValue(d['volume_percent'])
+                action.setChecked(True)
+
+        self._output_device.setMenu(self._device_menu)
 
         self.updateCurrentlyPlaying()
 
@@ -282,7 +296,8 @@ class Player(QtWidgets.QLabel):
         self._volume.setValue(max(volume, self.VOLUME_MINIMUM))
 
     def onVolumeChanged(self, value):
-        self._spotify.volume(value, device_id=self._active_device_id)
+        if self._active_device_id is not None:
+            self._spotify.volume(value, device_id=self._active_device_id)
 
     def onMute(self):
         if self._mute_button.isChecked():
@@ -292,16 +307,31 @@ class Player(QtWidgets.QLabel):
             self._volume.setValue(self._saved_volume_value)
 
     def onPlayPause(self):
-        cpb = self._spotify.current_playback()
-        if cpb['is_playing'] is True:
-            self._spotify.pause_playback(device_id=self._active_device_id)
-            self._play_pause_button.setIcon(Assets().play_icon)
-        else:
-            self._spotify.start_playback(device_id=self._active_device_id)
-            self._play_pause_button.setIcon(Assets().pause_icon)
+        if self._active_device_id is not None:
+            cpb = self._spotify.current_playback()
+            if cpb['is_playing'] is True:
+                self._spotify.pause_playback(device_id=self._active_device_id)
+                self._play_pause_button.setIcon(Assets().play_icon)
+            else:
+                self._spotify.start_playback(device_id=self._active_device_id)
+                self._play_pause_button.setIcon(Assets().pause_icon)
 
     def onNext(self):
-        self._spotify.next_track(device_id=self._active_device_id)
+        if self._active_device_id is not None:
+            self._spotify.next_track(device_id=self._active_device_id)
 
     def onPrev(self):
-        self._spotify.previous_track(device_id=self._active_device_id)
+        if self._active_device_id is not None:
+            self._spotify.previous_track(device_id=self._active_device_id)
+
+    def onDeviceSelected(self, action):
+        idx = self._device_actions.index(action)
+        self._active_device_id = self._devices[idx]['id']
+
+    def setActiveDevice(self, device_id):
+        for i, d in enumerate(self._devices):
+            if d['id'] == device_id:
+                self._active_device_id = d['id']
+                self._volume.setValue(d['volume_percent'])
+                self._device_actions[i].setChecked(True)
+                break

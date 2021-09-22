@@ -433,6 +433,10 @@ class MainWindow(QtWidgets.QMainWindow):
             self._left_latest_episodes.setChecked(True)
             self._left_latest_episodes.setFocus(QtCore.Qt.OtherFocusReason)
 
+        if self._player.active_device_id is None:
+            active_device_id = self._settings.value("device_id", None)
+            self._player.setActiveDevice(active_device_id)
+
     def onNetworkReply(self, reply):
         """
         Called when network request was finished
