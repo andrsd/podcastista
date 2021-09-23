@@ -92,7 +92,8 @@ class EpisodeWidget(QtWidgets.QWidget):
         self._title.setMaximumHeight(2 * self.LINE_HT + 6)
         font = self._title.font()
         font.setPointSizeF(font.pointSize() * 1.2)
-        if not self._played:
+        if (episode['resume_point']['resume_position_ms'] == 0 and
+                not episode['resume_point']['fully_played']):
             font.setBold(True)
         self._title.setFont(font)
         self._title.clicked.connect(self.onTitleClicked)
