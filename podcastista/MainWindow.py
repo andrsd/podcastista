@@ -553,6 +553,10 @@ class MainWindow(QtWidgets.QMainWindow):
         self._history = []
 
     def startPlayback(self, uris):
+        if self._player.active_device_id is None:
+            self.reportUnknownDeviceId()
+            return
+
         self.spotify.start_playback(
             device_id=self._player.active_device_id,
             uris=uris)
