@@ -146,13 +146,25 @@ class Player(QtWidgets.QLabel):
         layout.addSpacing(30)
 
         output_layout = QtWidgets.QHBoxLayout()
-        output_layout.setSpacing(1)
+        output_layout.setSpacing(4)
         output_layout.setContentsMargins(2, 0, 2, 0)
 
-        self._output_device = QtWidgets.QPushButton("D")
+        self._output_device = QtWidgets.QPushButton()
+        self._output_device.setIcon(Assets().devices_icon)
+        self._output_device.setIconSize(QtCore.QSize(20, 20))
+        self._output_device.setFixedSize(QtCore.QSize(20, 20))
+        self._output_device.setStyleSheet("""
+            QPushButton {
+                border:none;
+            }
+            QPushButton::menu-indicator {
+                image: none;
+            }
+            """)
         self._output_device.setFlat(True)
-        self._output_device.setFixedSize(QtCore.QSize(16, 16))
         output_layout.addWidget(self._output_device)
+
+        output_layout.addSpacing(4)
 
         self._mute_button = QtWidgets.QPushButton("M")
         self._mute_button.setFlat(True)
