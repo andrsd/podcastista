@@ -88,7 +88,7 @@ class EpisodeDetails(QtWidgets.QWidget):
 
         banner_right_layout.addSpacing(10)
 
-        self._play = QtWidgets.QPushButton("\u25B6  Play")
+        self._play = QtWidgets.QPushButton("")
         css = """
             border-radius: 4px;
             background-color: #307BF6;
@@ -102,6 +102,7 @@ class EpisodeDetails(QtWidgets.QWidget):
         self._play.setFixedHeight(28)
         self._play.setContentsMargins(0, 0, 0, 0)
         self._play.setEnabled(False)
+        self._play.setVisible(False)
         self._play.clicked.connect(self.onPlay)
         banner_right_layout.addWidget(self._play)
 
@@ -211,6 +212,15 @@ class EpisodeDetails(QtWidgets.QWidget):
         self._language_info.set(lang)
         self._rating_info.set(utils.rating(self._episode['explicit']))
 
+        resume_pt = episode['resume_point']
+        if resume_pt['fully_played']:
+            text = "\u25B6  Play Again"
+        elif resume_pt['resume_position_ms'] == 0:
+            text = "\u25B6  Play"
+        else:
+            text = "\u25B6  Resume"
+        self._play.setText(text)
+        self._play.setVisible(True)
         self._play.setEnabled(True)
 
     def onBack(self):
