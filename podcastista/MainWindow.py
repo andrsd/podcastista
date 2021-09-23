@@ -209,7 +209,7 @@ class MainWindow(QtWidgets.QMainWindow):
         self.setMinimumWidth(780)
         self.setMinimumHeight(480)
 
-        self._shows_tab.shows_loaded.connect(self._episodes_tab.fill)
+        self._shows_tab.shows_loaded.connect(self.onShowsLoaded)
 
     def setupMenuBar(self):
         """
@@ -399,7 +399,6 @@ class MainWindow(QtWidgets.QMainWindow):
 
         self._player.update()
         self.loadData()
-        self._restoreState()
 
     def _restoreState(self):
         act_tab = None
@@ -572,3 +571,7 @@ class MainWindow(QtWidgets.QMainWindow):
 
     def onSearchFocusOut(self):
         pass
+
+    def onShowsLoaded(self, shows):
+        self._episodes_tab.fill(shows)
+        self._restoreState()
