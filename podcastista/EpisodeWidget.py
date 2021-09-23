@@ -138,7 +138,7 @@ class EpisodeWidget(QtWidgets.QWidget):
 
         duration_layout.addWidget(self._duration)
 
-        self._duration_progress = QtWidgets.QProgressBar()
+        self._duration_progress = QtWidgets.QProgressBar(self)
         self._duration_progress.setVisible(progress_visible)
         self._duration_progress.setRange(0, episode['duration_ms'])
         self._duration_progress.setValue(resume_pt['resume_position_ms'])
