@@ -35,8 +35,6 @@ class ListenNowTab(QtWidgets.QScrollArea):
     Tab on the main window with the list of shows
     """
 
-    shows_loaded = QtCore.pyqtSignal(object)
-
     def __init__(self, parent):
         super().__init__()
         self._main_window = parent
