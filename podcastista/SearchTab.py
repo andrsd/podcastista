@@ -45,6 +45,20 @@ class SearchTab(QtWidgets.QWidget):
 
         # empty widget
         self._empty_widget = QtWidgets.QWidget()
+        empty_layout = QtWidgets.QVBoxLayout()
+
+        nothing = QtWidgets.QLabel("No results")
+        nothing.setSizePolicy(
+            QtWidgets.QSizePolicy.Expanding,
+            QtWidgets.QSizePolicy.Fixed)
+        nothing.setContentsMargins(40, 20, 40, 20)
+        nothing.setStyleSheet("""
+            font-size: 14px;
+            """)
+        nothing.setAlignment(QtCore.Qt.AlignHCenter | QtCore.Qt.AlignTop)
+        empty_layout.addWidget(nothing)
+        empty_layout.addStretch(1)
+        self._empty_widget.setLayout(empty_layout)
 
         # search results widget
         self._layout = QtWidgets.QVBoxLayout()
@@ -90,8 +104,6 @@ class SearchTab(QtWidgets.QWidget):
                 item.widget().deleteLater()
 
     def onSearchFinished(self):
-        self._stacked_layout.setCurrentWidget(self._results_widget)
-
         while self._layout.count() > 0:
             item = self._layout.takeAt(0)
             if item.widget() is not None:
@@ -131,6 +143,9 @@ class SearchTab(QtWidgets.QWidget):
                     self._episodes_layout.addWidget(HLine())
 
             need_hbar = True
+
+        if self._layout.count() > 0:
+            self._stacked_layout.setCurrentWidget(self._results_widget)
 
     def onPlayEpisode(self, episode):
         self._main_window.startPlayback([episode['uri']])

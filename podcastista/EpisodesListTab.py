@@ -26,7 +26,7 @@ class FillThread(QtCore.QThread):
         return self._episodes
 
 
-class EpisodesListTab(QtWidgets.QScrollArea):
+class EpisodesListTab(QtWidgets.QWidget):
     """
     Tab on the main window with the list of episodes
     """
@@ -37,7 +37,26 @@ class EpisodesListTab(QtWidgets.QScrollArea):
         self._episode_idx = {}
         self._episodes = []
 
-        self._layout = QtWidgets.QVBoxLayout(self)
+        # empty widget
+        self._empty_widget = QtWidgets.QWidget()
+        empty_layout = QtWidgets.QVBoxLayout()
+
+        nothing = QtWidgets.QLabel("No episodes")
+        nothing.setSizePolicy(
+            QtWidgets.QSizePolicy.Expanding,
+            QtWidgets.QSizePolicy.Fixed)
+        nothing.setContentsMargins(40, 20, 40, 20)
+        nothing.setStyleSheet("""
+            font-size: 14px;
+            """)
+        nothing.setAlignment(QtCore.Qt.AlignHCenter | QtCore.Qt.AlignTop)
+        empty_layout.addWidget(nothing)
+        empty_layout.addStretch(1)
+        self._empty_widget.setLayout(empty_layout)
+
+        # list of episodes
+
+        self._layout = QtWidgets.QVBoxLayout()
         self._layout.setSpacing(0)
         self._layout.setContentsMargins(4, 16, 16, 16)
 
@@ -47,11 +66,18 @@ class EpisodesListTab(QtWidgets.QScrollArea):
             QtWidgets.QSizePolicy.MinimumExpanding,
             QtWidgets.QSizePolicy.MinimumExpanding)
 
-        self.setFrameShape(QtWidgets.QFrame.NoFrame)
-        self.setWidgetResizable(True)
-        self.setWidget(widget)
+        self._list = QtWidgets.QScrollArea()
+        self._list.setFrameShape(QtWidgets.QFrame.NoFrame)
+        self._list.setWidgetResizable(True)
+        self._list.setWidget(widget)
+
+        self._stacked_layout = QtWidgets.QStackedLayout(self)
+        self._stacked_layout.addWidget(self._empty_widget)
+        self._stacked_layout.addWidget(self._list)
 
     def clear(self):
+        self._stacked_layout.setCurrentWidget(self._empty_widget)
+
         while self._layout.count() > 0:
             item = self._layout.takeAt(0)
             if item.widget() is not None:
@@ -98,6 +124,9 @@ class EpisodesListTab(QtWidgets.QScrollArea):
                     "margin-right: 38px; "
                     "color: #444")
                 self._layout.addWidget(hline)
+
+        if self._layout.count() > 0:
+            self._stacked_layout.setCurrentWidget(self._list)
 
     def onPlayFromEpisode(self, episode):
         start_idx = self._episode_idx[episode['id']]
