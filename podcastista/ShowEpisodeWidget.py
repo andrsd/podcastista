@@ -2,6 +2,7 @@ from PyQt5 import QtWidgets, QtGui, QtCore
 from podcastista.assets import Assets
 from podcastista import utils
 from podcastista.ClickableLabel import ClickableLabel
+from podcastista.EpisodePlayButton import EpisodePlayButton
 
 
 class ShowEpisodeWidget(QtWidgets.QWidget):
@@ -24,6 +25,46 @@ class ShowEpisodeWidget(QtWidgets.QWidget):
         self._artwork.setSizePolicy(
             QtWidgets.QSizePolicy.Fixed, QtWidgets.QSizePolicy.Fixed)
         self._artwork.setFixedSize(self.ARTWORK_WD, self.ARTWORK_HT)
+
+        self._stacked_ctrl_layout = QtWidgets.QStackedLayout()
+
+        # controls part
+        bottom_button_layout = QtWidgets.QBoxLayout(
+            QtWidgets.QBoxLayout.LeftToRight)
+
+        self._play_btn = EpisodePlayButton()
+        self._play_btn.clicked.connect(self.onPlay)
+
+        bottom_button_layout.addWidget(
+            self._play_btn,
+            0,
+            QtCore.Qt.AlignLeft | QtCore.Qt.AlignBottom)
+
+        self._buttons = QtWidgets.QWidget()
+        self._buttons.setLayout(bottom_button_layout)
+
+        self._stacked_ctrl_layout.addWidget(self._buttons)
+
+        # progress part
+        progress_layout = QtWidgets.QBoxLayout(
+            QtWidgets.QBoxLayout.LeftToRight)
+
+        self._progress_bar = QtWidgets.QProgressBar(self)
+        self._progress_bar.setVisible(False)
+
+        progress_layout.addWidget(
+            self._progress_bar,
+            0,
+            QtCore.Qt.AlignLeft | QtCore.Qt.AlignBottom)
+
+        self._progress = QtWidgets.QWidget()
+        self._progress.setLayout(progress_layout)
+
+        self._stacked_ctrl_layout.addWidget(self._progress)
+        self._stacked_ctrl_layout.setCurrentWidget(self._progress)
+
+        self._artwork.setLayout(self._stacked_ctrl_layout)
+
         self._layout.addWidget(self._artwork)
 
         img_url = self._show['images'][0]['url']
@@ -33,6 +74,15 @@ class ShowEpisodeWidget(QtWidgets.QWidget):
         self._layout.addSpacing(8)
 
         self._episode = self._show['episodes'][0]
+
+        resume_pt = self._episode['resume_point']
+        self._progress_bar.setRange(0, self._episode['duration_ms'])
+        self._progress_bar.setValue(resume_pt['resume_position_ms'])
+
+        if resume_pt['resume_position_ms'] == 0:
+            self._progress_bar.setVisible(False)
+        else:
+            self._progress_bar.setVisible(True)
 
         self._date = QtWidgets.QLabel(
             utils.dateToStr(self._episode['release_date']))
@@ -84,6 +134,14 @@ class ShowEpisodeWidget(QtWidgets.QWidget):
         else:
             return super().mouseReleaseEvent(event)
 
+    def enterEvent(self, event):
+        self._stacked_ctrl_layout.setCurrentWidget(self._buttons)
+        self._play_btn.setVisible(True)
+
+    def leaveEvent(self, event):
+        self._stacked_ctrl_layout.setCurrentWidget(self._progress)
+        self._play_btn.setVisible(False)
+
     def onClicked(self):
         self._main_window.viewEpisode(self._episode)
 
@@ -97,3 +155,6 @@ class ShowEpisodeWidget(QtWidgets.QWidget):
 
     def onTitleClicked(self):
         self._main_window.viewShow(self._show['id'])
+
+    def onPlay(self):
+        self._main_window.startPlayback([self._episode['uri']])
