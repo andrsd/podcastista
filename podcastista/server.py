@@ -1,8 +1,8 @@
 import os
+import sys
 import webbrowser
 
 from flask import Flask, request, redirect
-from waitress import serve
 from dotenv import load_dotenv
 
 import spotipy
@@ -11,13 +11,17 @@ import spotipy.util
 from PyQt5 import QtCore
 from pathlib import Path
 
-load_dotenv()
+if getattr(sys, 'frozen', False):
+    load_dotenv(dotenv_path=os.path.join(sys._MEIPASS, '.env'))
+else:
+    load_dotenv()
+
 SPOTIFY_CLIENT_ID = os.getenv('SPOTIFY_CLIENT_ID')
 SPOTIFY_CLIENT_SECRET = os.getenv('SPOTIFY_CLIENT_SECRET')
 SPOTIFY_REDIRECT_URI = 'http://localhost:9183'
 
 # port where we run  our http server so we can talk to spotify
-port = int(os.environ.get("CONCERTISTA_PORT", 9183))
+port = int(os.environ.get("PODCASTISTA_PORT", 9183))
 
 app = Flask(__name__)
 
@@ -82,7 +86,7 @@ class ServerThread(QtCore.QThread):
         """
         Thread body
         """
-        serve(app, host="0.0.0.0", port=port)
+        app.run(host="127.0.0.1", port=port)
 
 
 class Signaler(QtCore.QObject):
