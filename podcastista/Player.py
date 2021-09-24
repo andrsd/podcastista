@@ -199,7 +199,6 @@ class Player(QtWidgets.QLabel):
 
         self._update_timer = QtCore.QTimer()
         self._update_timer.timeout.connect(self.refresh)
-        self._update_timer.start(self.UPDATE_MS)
 
     @property
     def active_device_id(self):
@@ -211,6 +210,8 @@ class Player(QtWidgets.QLabel):
 
     def update(self):
         self._spotify = self._main_window.spotify
+        if self._spotify is None:
+            return
 
         self._prev_button.setEnabled(True)
         self._play_pause_button.setEnabled(True)
@@ -240,6 +241,7 @@ class Player(QtWidgets.QLabel):
         self._output_device.setMenu(self._device_menu)
 
         self.updateCurrentlyPlaying()
+        self._update_timer.start(self.UPDATE_MS)
 
         self._mute_button.setEnabled(True)
         self._saved_volume_value = self._volume.value()
@@ -252,6 +254,9 @@ class Player(QtWidgets.QLabel):
         """
         Update information of currently playing track
         """
+        if self._spotify is None:
+            return
+
         self._cpb = self._spotify.current_playback()
         if self._cpb is not None:
             if self._cpb['is_playing'] is True:

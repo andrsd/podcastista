@@ -26,9 +26,6 @@ class MainWindow(QtWidgets.QMainWindow):
     Main window
     """
 
-    ALBUM_IMAGE_WD = 128
-    ALBUM_IMAGE_HT = 128
-
     VOLUME_PAGE_STEP = 5
     VOLUME_MINIMUM = 0
     VOLUME_MAXIMUM = 100
@@ -46,8 +43,6 @@ class MainWindow(QtWidgets.QMainWindow):
         random.seed()
         # Spotify object
         self._spotify = None
-        # my Spotify profile
-        self._me = None
         self._settings = QtCore.QSettings()
         self._about_dlg = None
         self._window_menu = None
@@ -264,7 +259,12 @@ class MainWindow(QtWidgets.QMainWindow):
         """
         Update menu bar
         """
-        pass
+        enabled = self._spotify is not None
+        self._play_pause.setEnabled(enabled)
+        self._next.setEnabled(enabled)
+        self._previous.setEnabled(enabled)
+        self._volume_up.setEnabled(enabled)
+        self._volume_down.setEnabled(enabled)
 
     def onPlayPause(self):
         """
@@ -394,10 +394,10 @@ class MainWindow(QtWidgets.QMainWindow):
         """
         self._spotify = spotify
         if spotify is None:
+            self.errorCannotConnectToSpotify()
             return
 
-        self._me = self._spotify.me()
-
+        self.updateMenuBar()
         self._player.update()
         self.loadData()
 
@@ -444,12 +444,6 @@ class MainWindow(QtWidgets.QMainWindow):
         if reply.url().host() == "localhost":
             # our own requests
             return
-        else:
-            img = QtGui.QImage()
-            img.load(reply, "")
-            scaled_img = img.scaledToWidth(self.ALBUM_IMAGE_WD)
-            pixmap = QtGui.QPixmap.fromImage(scaled_img)
-            self._image.setPixmap(pixmap)
 
     def reportUnknownDeviceId(self):
         """
@@ -458,12 +452,31 @@ class MainWindow(QtWidgets.QMainWindow):
         mb = QtWidgets.QMessageBox(self)
         mb.setIcon(QtWidgets.QMessageBox.Critical)
         mb.setWindowTitle("Error")
-        mb.addButton(QtWidgets.QMessageBox.Ok)
+        mb.addButton(QtWidgets.QMessageBox.Close)
         mb.setText("Device ID unknown")
         mb.setInformativeText(
             "Try restarting Spotify and then this application.")
         horizontalSpacer = QtWidgets.QSpacerItem(
             400, 0,
+            QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Expanding)
+        layout = mb.layout()
+        layout.addItem(
+            horizontalSpacer, layout.rowCount(), 0, 1, layout.columnCount())
+        mb.exec()
+
+    def errorCannotConnectToSpotify(self):
+        mb = QtWidgets.QMessageBox(self)
+        mb.setIcon(QtWidgets.QMessageBox.Critical)
+        mb.setWindowTitle("Error")
+        mb.addButton(QtWidgets.QMessageBox.Close)
+        mb.setText("Failed to connect to Spotify")
+        mb.setInformativeText(
+            "Things to try to fix this problem:\n"
+            "\n"
+            " - Check your network connection\n"
+            " - Try restarting Spotify application and then this application.")
+        horizontalSpacer = QtWidgets.QSpacerItem(
+            500, 0,
             QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Expanding)
         layout = mb.layout()
         layout.addItem(

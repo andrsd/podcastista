@@ -20,7 +20,10 @@ class NetworkImage(QtCore.QObject):
         self.image_loaded.emit()
 
     def scaledToWidth(self, width):
-        return self._img.scaledToWidth(width)
+        if self._img.isNull():
+            return QtGui.QPixmap(width, width)
+        else:
+            return self._img.scaledToWidth(width)
 
 
 class Assets:
