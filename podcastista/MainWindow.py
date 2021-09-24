@@ -357,13 +357,14 @@ class MainWindow(QtWidgets.QMainWindow):
         self._settings.beginGroup("MainWindow")
         geom = self._settings.value("geometry")
         if geom is None:
-            # screen_rc = QtWidgets.QApplication.desktop().screenGeometry()
-            # wnd_wd = 600
-            # wnd_ht = self.ALBUM_IMAGE_HT + 24
-            # self.setGeometry(QtCore.QRect(
-            #     screen_rc.width() - wnd_wd - 10, 10,
-            #     wnd_wd, wnd_ht))
-            pass
+            screen_rc = QtWidgets.QApplication.desktop().screenGeometry()
+            wnd_wd = 1000
+            wnd_ht = 800
+            self.setGeometry(QtCore.QRect(
+                (screen_rc.width() - wnd_wd) / 2,
+                (screen_rc.height() - wnd_ht) / 2,
+                wnd_wd,
+                wnd_ht))
         else:
             self.restoreGeometry(geom)
         state = self._settings.value("splitter")
