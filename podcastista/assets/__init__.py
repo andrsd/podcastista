@@ -21,7 +21,7 @@ class NetworkImage(QtCore.QObject):
 
     def scaledToWidth(self, width):
         if self._img.isNull():
-            return QtGui.QPixmap(width, width)
+            return QtGui.QImage(width, width, QtGui.QImage.Format_Invalid)
         else:
             return self._img.scaledToWidth(width)
 
