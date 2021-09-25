@@ -132,5 +132,5 @@ class EpisodesListTab(QtWidgets.QWidget):
         start_idx = self._episode_idx[episode['id']]
         uris = []
         for ep in self._episodes[start_idx:]:
-            uris.append(ep['name'])
+            uris.append(ep['uri'])
         self._main_window.startPlayback(uris)
