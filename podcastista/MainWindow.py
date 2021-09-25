@@ -270,6 +270,9 @@ class MainWindow(QtWidgets.QMainWindow):
         """
         Start/Pause the playback
         """
+        if self._player.cpb is None:
+            return
+
         if self._player.cpb['is_playing'] is True:
             self._play_pause.setText("Play")
         else:
