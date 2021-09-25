@@ -2,6 +2,7 @@ from PyQt5 import QtWidgets, QtCore, QtGui
 from podcastista.assets import Assets
 from podcastista import utils
 from podcastista.ClickableLabel import ClickableLabel
+from podcastista.EpisodePlayButton import EpisodePlayButton
 
 
 class EpisodeWidget(QtWidgets.QWidget):
@@ -29,32 +30,26 @@ class EpisodeWidget(QtWidgets.QWidget):
                 episode['resume_point']['fully_played']):
             self._played = True
 
-        self._play = QtWidgets.QPushButton("\u25B6")
-        css = """
-            QPushButton {
-                color: #282828;
-            }
-            QPushButton:hover {
-                color: #307BF6;
-            }
-            """
-        self._play.setFlat(True)
-        self._play.setStyleSheet(css)
-        self._play.setFixedWidth(38)
-        self._play.setFixedHeight(28)
-        self._play.setContentsMargins(0, 0, 0, 0)
-        font = self._play.font()
-        font.setPointSizeF(font.pointSize() * 1.3)
-        self._play.setFont(font)
-        self._play.clicked.connect(self.onPlay)
-        self._layout.addWidget(self._play)
-
         if artwork:
+            self._layout.addSpacing(20)
+
             self._artwork = QtWidgets.QLabel()
             self._artwork.setSizePolicy(
                 QtWidgets.QSizePolicy.Fixed, QtWidgets.QSizePolicy.Fixed)
             self._artwork.setFixedSize(self.ARTWORK_WD, self.ARTWORK_HT)
             self._artwork.setStyleSheet("border: 1px solid #fff")
+
+            play_button_layout = QtWidgets.QBoxLayout(
+                QtWidgets.QBoxLayout.LeftToRight)
+
+            self._play = EpisodePlayButton()
+            self._play.setSize(QtCore.QSize(40, 40))
+            self._play.setVisible(False)
+            self._play.clicked.connect(self.onPlay)
+
+            play_button_layout.addWidget(self._play, 0, QtCore.Qt.AlignCenter)
+            self._artwork.setLayout(play_button_layout)
+
             self._layout.addWidget(self._artwork)
 
             img_url = self._episode['images'][0]['url']
@@ -63,6 +58,38 @@ class EpisodeWidget(QtWidgets.QWidget):
 
             self._layout.addSpacing(8)
         else:
+            play_button_layout = QtWidgets.QVBoxLayout()
+
+            play_button_layout.addSpacing(self.LINE_HT + 2)
+
+            self._play = QtWidgets.QPushButton("\u25B6")
+            css = """
+                QPushButton {
+                    color: #282828;
+                }
+                QPushButton:hover {
+                    color: #307BF6;
+                }
+                """
+            self._play.setFlat(True)
+            self._play.setStyleSheet(css)
+            self._play.setFixedWidth(38)
+            self._play.setFixedHeight(28)
+            self._play.setContentsMargins(0, 0, 0, 0)
+            font = self._play.font()
+            font.setPointSizeF(font.pointSize() * 1.3)
+            self._play.setFont(font)
+            self._play.setVisible(False)
+            self._play.clicked.connect(self.onPlay)
+            play_button_layout.addWidget(self._play)
+
+            spacer = QtWidgets.QSpacerItem(
+                38, 0,
+                QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Expanding)
+            play_button_layout.addItem(spacer)
+
+            self._layout.addLayout(play_button_layout)
+
             self._artwork = None
             self._img = None
 
@@ -161,12 +188,11 @@ class EpisodeWidget(QtWidgets.QWidget):
             EpisodeWidget:hover { background-color: #363636 }
             """)
 
-    def mouseReleaseEvent(self, event):
-        if (event.button() == QtCore.Qt.LeftButton and
-                self.rect().contains(event.pos())):
-            self.onClicked()
-        else:
-            return super().mouseReleaseEvent(event)
+    def enterEvent(self, event):
+        self._play.setVisible(True)
+
+    def leaveEvent(self, event):
+        self._play.setVisible(False)
 
     def onClicked(self):
         self._main_window.viewEpisode(self._episode)
