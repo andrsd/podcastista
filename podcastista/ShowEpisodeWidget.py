@@ -102,7 +102,8 @@ class ShowEpisodeWidget(QtWidgets.QWidget):
         self._episode_name.setAlignment(
             QtCore.Qt.AlignLeft | QtCore.Qt.AlignTop)
         font = self._episode_name.font()
-        font.setBold(True)
+        if resume_pt['resume_position_ms'] == 0:
+            font.setBold(True)
         font.setPointSizeF(font.pointSize() * 1.3)
         self._episode_name.setFont(font)
         self._episode_name.setStyleSheet("color: #fff")
