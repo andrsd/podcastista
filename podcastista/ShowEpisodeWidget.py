@@ -51,11 +51,8 @@ class ShowEpisodeWidget(QtWidgets.QWidget):
 
         self._progress_bar = QtWidgets.QProgressBar(self)
         self._progress_bar.setVisible(False)
-
         progress_layout.addWidget(
-            self._progress_bar,
-            0,
-            QtCore.Qt.AlignLeft | QtCore.Qt.AlignBottom)
+            self._progress_bar, 0, QtCore.Qt.AlignBottom)
 
         self._progress = QtWidgets.QWidget()
         self._progress.setLayout(progress_layout)
