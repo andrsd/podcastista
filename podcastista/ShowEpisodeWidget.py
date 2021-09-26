@@ -140,7 +140,7 @@ class ShowEpisodeWidget(QtWidgets.QWidget):
         self._title.setFixedWidth(self.ARTWORK_WD)
         self._title.setFixedHeight(self.LINE_HT)
         self._title.setStyleSheet("color: #307BF6")
-        self._title.clicked.connect(self.onTitleClicked)
+        self._title.clicked.connect(self.onShowNameClicked)
         self._layout.addWidget(self._title)
 
         self.setSizePolicy(
@@ -167,7 +167,7 @@ class ShowEpisodeWidget(QtWidgets.QWidget):
         self._play_btn.setVisible(False)
 
     def onClicked(self):
-        self._main_window.viewEpisode(self._episode)
+        self.onShowNameClicked()
 
     def onImageLoaded(self):
         scaled_img = self._img.scaledToWidth(self.ARTWORK_WD)
@@ -177,7 +177,7 @@ class ShowEpisodeWidget(QtWidgets.QWidget):
     def onEpisodeNameClicked(self):
         self._main_window.viewEpisode(self._episode)
 
-    def onTitleClicked(self):
+    def onShowNameClicked(self):
         self._main_window.viewShow(self._show['id'])
 
     def onPlay(self):
