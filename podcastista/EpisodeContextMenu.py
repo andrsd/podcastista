@@ -22,8 +22,10 @@ class EpisodeContextMenu(QtWidgets.QMenu):
     def onAddToQueue(self):
         if self._uri is not None:
             self._main_window.addToQueue(self._uri)
+            self._main_window.showNotification("Added to queue")
 
     def onCopyLink(self):
         if self._uri is not None:
             clipboard = QtGui.QGuiApplication.clipboard()
             clipboard.setText(self._uri)
+            self._main_window.showNotification("Link copied to clipboard")

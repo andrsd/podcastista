@@ -206,6 +206,18 @@ class MainWindow(QtWidgets.QMainWindow):
 
         self._shows_tab.shows_loaded.connect(self.onShowsLoaded)
 
+        self._notification = QtWidgets.QLabel(self)
+        self._notification.setStyleSheet("""
+            QLabel {
+                border-radius: 6px;
+                background-color: #307BF6;
+                color: #fff;
+                font-size: 14px;
+            }
+            """)
+        self._notification.setAlignment(QtCore.Qt.AlignCenter)
+        self._notification.setVisible(False)
+
     def setupMenuBar(self):
         """
         Setup menu bar
@@ -603,3 +615,27 @@ class MainWindow(QtWidgets.QMainWindow):
     def onShowsLoaded(self, shows):
         self._episodes_tab.fill(shows)
         self._restoreState()
+
+    def showNotification(self, text):
+        self._notification.setText(text)
+        self._notification.setContentsMargins(30, 8, 30, 8)
+        self._notification.adjustSize()
+        left = (self.width() - self._notification.width()) / 2
+        top = self.height() - self._player.height() - self._notification.height()
+        self._notification.setGeometry(left, top, self._notification.width(),
+            self._notification.height())
+        self._notification.setGraphicsEffect(None)
+        self._notification.show()
+
+        QtCore.QTimer.singleShot(2000, self.onNotificationFadeOut)
+
+    def onNotificationFadeOut(self):
+        effect = QtWidgets.QGraphicsOpacityEffect()
+        self._notification.setGraphicsEffect(effect)
+
+        self._anim = QtCore.QPropertyAnimation(effect, b"opacity")
+        self._anim.setDuration(250)
+        self._anim.setStartValue(1)
+        self._anim.setEndValue(0)
+        self._anim.finished.connect(self._notification.hide)
+        self._anim.start()
