@@ -23,28 +23,37 @@ class ShowEpisodeWidget(QtWidgets.QWidget):
         self._layout.setContentsMargins(16, 16, 16, 16)
         self._layout.setSpacing(6)
 
-        self._artwork = QtWidgets.QLabel()
+        self._stacked_artwork_layout = QtWidgets.QStackedLayout()
+        self._stacked_artwork_layout.setStackingMode(
+            QtWidgets.QStackedLayout.StackAll)
+
+        self._artwork = QtWidgets.QLabel(self)
         self._artwork.setSizePolicy(
             QtWidgets.QSizePolicy.Fixed, QtWidgets.QSizePolicy.Fixed)
         self._artwork.setFixedSize(self.ARTWORK_WD, self.ARTWORK_HT)
 
-        self._stacked_ctrl_layout = QtWidgets.QStackedLayout()
+        img_url = self._show['images'][0]['url']
+        self._img = Assets().get(img_url)
+        self._img.image_loaded.connect(self.onImageLoaded)
+
+        self._stacked_artwork_layout.addWidget(self._artwork)
 
         # controls part
-        bottom_button_layout = QtWidgets.QBoxLayout(
-            QtWidgets.QBoxLayout.LeftToRight)
+        self._controls = QtWidgets.QStackedWidget()
+
+        buttons_layout = QtWidgets.QHBoxLayout()
 
         self._play_btn = EpisodePlayButton(
             Assets().ep_play_normal_icon,
             Assets().ep_play_selected_icon
         )
         self._play_btn.clicked.connect(self.onPlay)
-        bottom_button_layout.addWidget(
+        buttons_layout.addWidget(
             self._play_btn,
             0,
             QtCore.Qt.AlignLeft | QtCore.Qt.AlignBottom)
 
-        bottom_button_layout.addStretch()
+        buttons_layout.addStretch()
 
         self._dots_menu = EpisodeContextMenu(self._main_window, self._episode)
         self._dots_btn = EpisodePlayButton(
@@ -59,39 +68,33 @@ class ShowEpisodeWidget(QtWidgets.QWidget):
                 image: none;
             }
             """)
-        bottom_button_layout.addWidget(
+        buttons_layout.addWidget(
             self._dots_btn,
             0,
             QtCore.Qt.AlignRight | QtCore.Qt.AlignBottom)
         self._dots_btn.setMenu(self._dots_menu)
 
         self._buttons = QtWidgets.QWidget()
-        self._buttons.setLayout(bottom_button_layout)
+        self._buttons.setLayout(buttons_layout)
 
-        self._stacked_ctrl_layout.addWidget(self._buttons)
+        self._controls.addWidget(self._buttons)
 
         # progress part
-        progress_layout = QtWidgets.QBoxLayout(
-            QtWidgets.QBoxLayout.LeftToRight)
+        progress_layout = QtWidgets.QHBoxLayout()
 
         self._progress_bar = QtWidgets.QProgressBar(self)
-        self._progress_bar.setVisible(False)
         progress_layout.addWidget(
             self._progress_bar, 0, QtCore.Qt.AlignBottom)
 
         self._progress = QtWidgets.QWidget()
         self._progress.setLayout(progress_layout)
 
-        self._stacked_ctrl_layout.addWidget(self._progress)
-        self._stacked_ctrl_layout.setCurrentWidget(self._progress)
+        self._controls.addWidget(self._progress)
+        self._controls.setCurrentWidget(self._progress)
 
-        self._artwork.setLayout(self._stacked_ctrl_layout)
+        self._stacked_artwork_layout.addWidget(self._controls)
 
-        self._layout.addWidget(self._artwork)
-
-        img_url = self._show['images'][0]['url']
-        self._img = Assets().get(img_url)
-        self._img.image_loaded.connect(self.onImageLoaded)
+        self._layout.addLayout(self._stacked_artwork_layout)
 
         self._layout.addSpacing(8)
 
@@ -156,11 +159,11 @@ class ShowEpisodeWidget(QtWidgets.QWidget):
             return super().mouseReleaseEvent(event)
 
     def enterEvent(self, event):
-        self._stacked_ctrl_layout.setCurrentWidget(self._buttons)
+        self._controls.setCurrentWidget(self._buttons)
         self._play_btn.setVisible(True)
 
     def leaveEvent(self, event):
-        self._stacked_ctrl_layout.setCurrentWidget(self._progress)
+        self._controls.setCurrentWidget(self._progress)
         self._play_btn.setVisible(False)
 
     def onClicked(self):
