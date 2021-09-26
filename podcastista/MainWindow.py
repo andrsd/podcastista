@@ -621,9 +621,10 @@ class MainWindow(QtWidgets.QMainWindow):
         self._notification.setContentsMargins(30, 8, 30, 8)
         self._notification.adjustSize()
         left = (self.width() - self._notification.width()) / 2
-        top = self.height() - self._player.height() - self._notification.height()
-        self._notification.setGeometry(left, top, self._notification.width(),
-            self._notification.height())
+        top = self.height() - self._player.height() \
+            - self._notification.height()
+        self._notification.setGeometry(
+            left, top, self._notification.width(), self._notification.height())
         self._notification.setGraphicsEffect(None)
         self._notification.show()
 
