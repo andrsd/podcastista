@@ -76,8 +76,8 @@ class MainWindow(QtWidgets.QMainWindow):
         self._shows_tab = ShowsTab(self)
         self._search_tab = SearchTab(self)
 
-        left_layout = QtWidgets.QVBoxLayout()
-        left_layout.setSpacing(4)
+        side_bar_layout = QtWidgets.QVBoxLayout()
+        side_bar_layout.setSpacing(4)
 
         search_ss = """
             QLineEdit {
@@ -98,9 +98,9 @@ class MainWindow(QtWidgets.QMainWindow):
         self._search_box.installEventFilter(self)
         self._search_box.returnPressed.connect(self.onSearch)
         self._search_box.textChanged.connect(self.onSearchTextChanged)
-        left_layout.addWidget(self._search_box)
+        side_bar_layout.addWidget(self._search_box)
 
-        left_layout.addSpacing(20)
+        side_bar_layout.addSpacing(20)
 
         item_ss = """
             QPushButton {
@@ -117,19 +117,19 @@ class MainWindow(QtWidgets.QMainWindow):
         self._left_listen_now.setFlat(True)
         self._left_listen_now.setCheckable(True)
         self._left_listen_now.setStyleSheet(item_ss)
-        left_layout.addWidget(self._left_listen_now)
+        side_bar_layout.addWidget(self._left_listen_now)
 
         self._left_shows = QtWidgets.QPushButton("Shows")
         self._left_shows.setFlat(True)
         self._left_shows.setCheckable(True)
         self._left_shows.setStyleSheet(item_ss)
-        left_layout.addWidget(self._left_shows)
+        side_bar_layout.addWidget(self._left_shows)
 
         self._left_latest_episodes = QtWidgets.QPushButton("Latest Episodes")
         self._left_latest_episodes.setFlat(True)
         self._left_latest_episodes.setCheckable(True)
         self._left_latest_episodes.setStyleSheet(item_ss)
-        left_layout.addWidget(self._left_latest_episodes)
+        side_bar_layout.addWidget(self._left_latest_episodes)
 
         self._left_group = QtWidgets.QButtonGroup()
         self._left_group.setExclusive(True)
@@ -140,7 +140,7 @@ class MainWindow(QtWidgets.QMainWindow):
 
         self._left_group.buttonClicked.connect(self.onLeftGroupClicked)
 
-        left_layout.addStretch()
+        side_bar_layout.addStretch()
 
         powered_by_layout = QtWidgets.QHBoxLayout()
 
@@ -153,16 +153,16 @@ class MainWindow(QtWidgets.QMainWindow):
         spotify_logo.setPixmap(Assets().spotify_logo.pixmap(80, 24))
         powered_by_layout.addWidget(spotify_logo, 0, QtCore.Qt.AlignRight)
 
-        left_layout.addLayout(powered_by_layout)
+        side_bar_layout.addLayout(powered_by_layout)
 
-        self._left = QtWidgets.QWidget()
-        self._left.setSizePolicy(QtWidgets.QSizePolicy.Expanding,
-                                 QtWidgets.QSizePolicy.Expanding)
-        self._left.setMinimumWidth(200)
-        self._left.setMaximumWidth(250)
-        self._left.setStyleSheet("background-color: #222")
+        self._side_bar = QtWidgets.QWidget()
+        self._side_bar.setSizePolicy(
+            QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Expanding)
+        self._side_bar.setMinimumWidth(200)
+        self._side_bar.setMaximumWidth(250)
+        self._side_bar.setStyleSheet("background-color: #222")
 
-        self._left.setLayout(left_layout)
+        self._side_bar.setLayout(side_bar_layout)
 
         #
         self._show = ShowDetails(self)
@@ -182,7 +182,7 @@ class MainWindow(QtWidgets.QMainWindow):
         self._splitter = QtWidgets.QSplitter(self)
         self._splitter.setOrientation(QtCore.Qt.Horizontal)
         self._splitter.setChildrenCollapsible(False)
-        self._splitter.addWidget(self._left)
+        self._splitter.addWidget(self._side_bar)
         self._splitter.addWidget(self._right)
 
         self._player = Player(self)
