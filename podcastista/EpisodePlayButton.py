@@ -1,12 +1,12 @@
 from PyQt5 import QtWidgets, QtCore
-from podcastista.assets import Assets
 
 
 class EpisodePlayButton(QtWidgets.QPushButton):
 
-    def __init__(self, parent=None):
+    def __init__(self, icon_normal, icon_selected, parent=None):
         super().__init__(parent)
-        self.setIcon(Assets().ep_play_normal_icon)
+        self._icons = [icon_normal, icon_selected]
+        self.setIcon(self._icons[0])
         self.setSize(QtCore.QSize(32, 32))
         self.setStyleSheet("""
             QPushButton {
@@ -20,7 +20,7 @@ class EpisodePlayButton(QtWidgets.QPushButton):
         self.setFixedSize(size)
 
     def enterEvent(self, event):
-        self.setIcon(Assets().ep_play_selected_icon)
+        self.setIcon(self._icons[1])
 
     def leaveEvent(self, event):
-        self.setIcon(Assets().ep_play_normal_icon)
+        self.setIcon(self._icons[0])

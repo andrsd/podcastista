@@ -3,6 +3,7 @@ from podcastista.assets import Assets
 from podcastista import utils
 from podcastista.ClickableLabel import ClickableLabel
 from podcastista.EpisodePlayButton import EpisodePlayButton
+from podcastista.EpisodeContextMenu import EpisodeContextMenu
 
 
 class ShowEpisodeWidget(QtWidgets.QWidget):
@@ -15,6 +16,7 @@ class ShowEpisodeWidget(QtWidgets.QWidget):
     def __init__(self, show, parent=None):
         super().__init__(parent)
         self._show = show
+        self._episode = self._show['episodes'][0]
         self._main_window = parent
 
         self._layout = QtWidgets.QVBoxLayout()
@@ -32,13 +34,36 @@ class ShowEpisodeWidget(QtWidgets.QWidget):
         bottom_button_layout = QtWidgets.QBoxLayout(
             QtWidgets.QBoxLayout.LeftToRight)
 
-        self._play_btn = EpisodePlayButton()
+        self._play_btn = EpisodePlayButton(
+            Assets().ep_play_normal_icon,
+            Assets().ep_play_selected_icon
+        )
         self._play_btn.clicked.connect(self.onPlay)
-
         bottom_button_layout.addWidget(
             self._play_btn,
             0,
             QtCore.Qt.AlignLeft | QtCore.Qt.AlignBottom)
+
+        bottom_button_layout.addStretch()
+
+        self._dots_menu = EpisodeContextMenu(self._main_window, self._episode)
+        self._dots_btn = EpisodePlayButton(
+            Assets().ep_dots_normal_icon,
+            Assets().ep_dots_selected_icon
+        )
+        self._dots_btn.setStyleSheet("""
+            QPushButton {
+                border:none;
+            }
+            QPushButton::menu-indicator {
+                image: none;
+            }
+            """)
+        bottom_button_layout.addWidget(
+            self._dots_btn,
+            0,
+            QtCore.Qt.AlignRight | QtCore.Qt.AlignBottom)
+        self._dots_btn.setMenu(self._dots_menu)
 
         self._buttons = QtWidgets.QWidget()
         self._buttons.setLayout(bottom_button_layout)
@@ -69,8 +94,6 @@ class ShowEpisodeWidget(QtWidgets.QWidget):
         self._img.image_loaded.connect(self.onImageLoaded)
 
         self._layout.addSpacing(8)
-
-        self._episode = self._show['episodes'][0]
 
         resume_pt = self._episode['resume_point']
         self._progress_bar.setRange(0, self._episode['duration_ms'])

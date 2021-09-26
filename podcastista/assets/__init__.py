@@ -51,6 +51,10 @@ class Assets:
             os.path.join(icons_dir, "ep-play-normal.svg"))
         self.ep_play_selected_icon = QtGui.QIcon(
             os.path.join(icons_dir, "ep-play-selected.svg"))
+        self.ep_dots_normal_icon = QtGui.QIcon(
+            os.path.join(icons_dir, "ep-dots-normal.svg"))
+        self.ep_dots_selected_icon = QtGui.QIcon(
+            os.path.join(icons_dir, "ep-dots-selected.svg"))
 
         self.devices_icon = QtGui.QIcon(os.path.join(icons_dir, "devices.svg"))
 

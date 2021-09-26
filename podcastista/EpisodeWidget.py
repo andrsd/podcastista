@@ -3,6 +3,7 @@ from podcastista.assets import Assets
 from podcastista import utils
 from podcastista.ClickableLabel import ClickableLabel
 from podcastista.EpisodePlayButton import EpisodePlayButton
+from podcastista.EpisodeContextMenu import EpisodeContextMenu
 
 
 class EpisodeWidget(QtWidgets.QWidget):
@@ -42,7 +43,10 @@ class EpisodeWidget(QtWidgets.QWidget):
             play_button_layout = QtWidgets.QBoxLayout(
                 QtWidgets.QBoxLayout.LeftToRight)
 
-            self._play = EpisodePlayButton()
+            self._play = EpisodePlayButton(
+                Assets().ep_play_normal_icon,
+                Assets().ep_play_selected_icon
+            )
             self._play.setSize(QtCore.QSize(40, 40))
             self._play.setVisible(False)
             self._play.clicked.connect(self.onPlay)
@@ -140,7 +144,7 @@ class EpisodeWidget(QtWidgets.QWidget):
 
         self._layout.addLayout(left_layout)
 
-        self._layout.addSpacing(10)
+        self._layout.addSpacing(20)
 
         duration_layout = QtWidgets.QVBoxLayout()
 
@@ -178,6 +182,25 @@ class EpisodeWidget(QtWidgets.QWidget):
         duration_layout.addStretch()
 
         self._layout.addLayout(duration_layout)
+
+        self._layout.addSpacing(20)
+
+        actions_layout = QtWidgets.QHBoxLayout()
+
+        self._dots_menu = EpisodeContextMenu(self._main_window, self._episode)
+        self._dots_btn = QtWidgets.QPushButton("...")
+        self._dots_btn.setStyleSheet("""
+            QPushButton {
+                border:none;
+            }
+            QPushButton::menu-indicator {
+                image: none;
+            }
+            """)
+        self._dots_btn.setFlat(True)
+        self._dots_btn.setMenu(self._dots_menu)
+        actions_layout.addWidget(self._dots_btn)
+        self._layout.addLayout(actions_layout)
 
         self.setSizePolicy(
             QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Fixed)

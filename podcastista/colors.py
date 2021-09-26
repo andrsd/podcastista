@@ -10,7 +10,7 @@ COLORS = {
     'Active:HighlightedText': (255, 255, 255),
     'Active:WindowText': (200, 200, 200),
     'Active:ButtonText': (200, 200, 200),
-    'Active:Highlight': (83, 167, 165),
+    'Active:Highlight': (48, 123, 246),
     'Active:Link': (48, 123, 246),
     'Disabled:Light': (0, 0, 0, 0),
     'Disabled:Text': (140, 140, 140),

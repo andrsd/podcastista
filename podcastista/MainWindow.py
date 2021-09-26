@@ -578,6 +578,13 @@ class MainWindow(QtWidgets.QMainWindow):
             device_id=self._player.active_device_id,
             uris=uris)
 
+    def addToQueue(self, uri):
+        if self._player.active_device_id is None:
+            self.reportUnknownDeviceId()
+            return
+
+        self.spotify.add_to_queue(uri, device_id=self._player.active_device_id)
+
     def eventFilter(self, source, event):
         if (event.type() == QtCore.QEvent.FocusOut and
                 source is self._search_box):
