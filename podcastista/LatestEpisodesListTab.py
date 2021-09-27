@@ -26,7 +26,7 @@ class FillThread(QtCore.QThread):
         return self._episodes
 
 
-class EpisodesListTab(QtWidgets.QWidget):
+class LatestEpisodesListTab(QtWidgets.QWidget):
     """
     Tab on the main window with the list of episodes
     """

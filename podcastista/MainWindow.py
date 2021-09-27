@@ -10,7 +10,7 @@ from podcastista import server
 from podcastista.assets import Assets
 from podcastista.AboutDialog import AboutDialog
 from podcastista.ListenNowTab import ListenNowTab
-from podcastista.EpisodesListTab import EpisodesListTab
+from podcastista.LatestEpisodesListTab import LatestEpisodesListTab
 from podcastista.ShowsTab import ShowsTab
 from podcastista.SearchTab import SearchTab
 from podcastista.ShowDetails import ShowDetails
@@ -48,7 +48,7 @@ class MainWindow(QtWidgets.QMainWindow):
         self._window_menu = None
 
         self._splitter = None
-        self._episodes_tab = None
+        self._latest_episodes_tab = None
         self._shows_tab = None
         self._search_tab = None
         self._show = None
@@ -72,7 +72,7 @@ class MainWindow(QtWidgets.QMainWindow):
         Setup widgets
         """
         self._listen_now_tab = ListenNowTab(self)
-        self._episodes_tab = EpisodesListTab(self)
+        self._latest_episodes_tab = LatestEpisodesListTab(self)
         self._shows_tab = ShowsTab(self)
         self._search_tab = SearchTab(self)
 
@@ -171,7 +171,7 @@ class MainWindow(QtWidgets.QMainWindow):
         self._stacked_layout = QtWidgets.QStackedLayout()
         self._stacked_layout.addWidget(self._search_tab)
         self._stacked_layout.addWidget(self._listen_now_tab)
-        self._stacked_layout.addWidget(self._episodes_tab)
+        self._stacked_layout.addWidget(self._latest_episodes_tab)
         self._stacked_layout.addWidget(self._shows_tab)
         self._stacked_layout.addWidget(self._show)
         self._stacked_layout.addWidget(self._episode_detail)
@@ -423,8 +423,8 @@ class MainWindow(QtWidgets.QMainWindow):
             act_tab = self._listen_now_tab
         elif self._stacked_layout.currentWidget() == self._shows_tab:
             act_tab = self._shows_tab
-        elif self._stacked_layout.currentWidget() == self._episodes_tab:
-            act_tab = self._episodes_tab
+        elif self._stacked_layout.currentWidget() == self._latest_episodes_tab:
+            act_tab = self._latest_episodes_tab
         elif self._stacked_layout.currentWidget() == self._show:
             show_id = self._settings.value("active_show_id")
             if show_id is not None:
@@ -444,7 +444,7 @@ class MainWindow(QtWidgets.QMainWindow):
         elif act_tab == self._shows_tab:
             self._left_shows.setChecked(True)
             self._left_shows.setFocus(QtCore.Qt.OtherFocusReason)
-        elif act_tab == self._episodes_tab:
+        elif act_tab == self._latest_episodes_tab:
             self._left_latest_episodes.setChecked(True)
             self._left_latest_episodes.setFocus(QtCore.Qt.OtherFocusReason)
 
@@ -500,7 +500,7 @@ class MainWindow(QtWidgets.QMainWindow):
 
     def clearData(self):
         self._shows_tab.clear()
-        self._episodes_tab.clear()
+        self._latest_episodes_tab.clear()
         self._listen_now_tab.clear()
 
     def loadData(self):
@@ -510,7 +510,7 @@ class MainWindow(QtWidgets.QMainWindow):
     def onViewEpisodes(self):
         self._left_latest_episodes.setChecked(True)
         self._left_latest_episodes.setFocus(QtCore.Qt.OtherFocusReason)
-        self._stacked_layout.setCurrentWidget(self._episodes_tab)
+        self._stacked_layout.setCurrentWidget(self._latest_episodes_tab)
 
     def onViewShows(self):
         self._left_shows.setChecked(True)
@@ -578,7 +578,7 @@ class MainWindow(QtWidgets.QMainWindow):
         elif id == self.SHOWS_ID:
             self._stacked_layout.setCurrentWidget(self._shows_tab)
         elif id == self.LATEST_EPISODES_ID:
-            self._stacked_layout.setCurrentWidget(self._episodes_tab)
+            self._stacked_layout.setCurrentWidget(self._latest_episodes_tab)
         self._history = []
 
     def startPlayback(self, uris):
@@ -613,7 +613,7 @@ class MainWindow(QtWidgets.QMainWindow):
         pass
 
     def onShowsLoaded(self, shows):
-        self._episodes_tab.fill(shows)
+        self._latest_episodes_tab.fill(shows)
         self._restoreState()
 
     def showNotification(self, text):
