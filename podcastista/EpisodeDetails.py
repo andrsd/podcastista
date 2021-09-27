@@ -130,7 +130,7 @@ class EpisodeDetails(QtWidgets.QWidget):
         font = self._description.font()
         font.setPointSizeF(font.pointSize() * 1.15)
         self._description.setFont(font)
-        self._description.setContentsMargins(16, 20, 240, 20)
+        self._description.setContentsMargins(16, 20, 240, 0)
         scroll_layout.addWidget(self._description)
 
         hline = HLine()
@@ -163,13 +163,11 @@ class EpisodeDetails(QtWidgets.QWidget):
 
         scroll_layout.addLayout(grid)
 
-        scroll_layout.addStretch()
-
         widget = QtWidgets.QWidget()
         widget.setLayout(scroll_layout)
         widget.setSizePolicy(
             QtWidgets.QSizePolicy.Expanding,
-            QtWidgets.QSizePolicy.Expanding)
+            QtWidgets.QSizePolicy.Fixed)
 
         scroll_area = QtWidgets.QScrollArea()
         scroll_area.setFrameShape(QtWidgets.QFrame.NoFrame)
