@@ -259,6 +259,15 @@ class ShowDetails(QtWidgets.QWidget):
             ": ".join([latest_episode['name'], latest_episode['description']])
         )
 
+        resume_pt = latest_episode['resume_point']
+        if resume_pt['fully_played']:
+            text = "\u25B6  Play Again"
+        elif resume_pt['resume_position_ms'] == 0:
+            text = "\u25B6  Latest Episode"
+        else:
+            text = "\u25B6  Resume"
+        self._play_latest.setText(text)
+
         self._episode_idx = {}
         for idx, episode in enumerate(self._show['episodes']['items'][0:8]):
             self._episode_idx[episode['id']] = idx
