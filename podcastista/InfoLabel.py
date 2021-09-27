@@ -17,11 +17,21 @@ class InfoLabel(QtWidgets.QWidget):
         self._title.setStyleSheet("""
             color: #888
             """)
+        self._title.setSizePolicy(
+            QtWidgets.QSizePolicy.Expanding,
+            QtWidgets.QSizePolicy.Fixed)
         self._layout.addWidget(self._title)
 
         self._text = QtWidgets.QLabel(text)
         self._text.setFont(font)
+        self._text.setSizePolicy(
+            QtWidgets.QSizePolicy.Expanding,
+            QtWidgets.QSizePolicy.Fixed)
         self._layout.addWidget(self._text)
+
+        self.setSizePolicy(
+            QtWidgets.QSizePolicy.Expanding,
+            QtWidgets.QSizePolicy.Fixed)
 
     def set(self, text):
         self._text.setText(text)

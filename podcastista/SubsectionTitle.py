@@ -9,3 +9,6 @@ class SubsectionTitle(QtWidgets.QLabel):
         font.setBold(True)
         font.setPointSizeF(font.pointSize() * 1.5)
         self.setFont(font)
+        self.setSizePolicy(
+            QtWidgets.QSizePolicy.Expanding,
+            QtWidgets.QSizePolicy.Fixed)
