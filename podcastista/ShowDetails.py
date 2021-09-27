@@ -6,7 +6,6 @@ from podcastista.BackButton import BackButton
 from podcastista.SubsectionTitle import SubsectionTitle
 from podcastista.InfoLabel import InfoLabel
 from podcastista.ClickableLabel import ClickableLabel
-from podcastista.ShowEpisodeList import ShowEpisodeList
 from podcastista import utils
 
 
