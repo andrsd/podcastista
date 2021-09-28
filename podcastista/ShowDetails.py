@@ -328,10 +328,11 @@ class ShowDetails(QtWidgets.QWidget):
         self._play_latest.setEnabled(True)
 
         # fill episode list
+        self._all_episode_idx = {}
         for idx, episode in enumerate(self._show['episodes']['items']):
-            # self._episode_idx[episode['id']] = idx
+            self._all_episode_idx[episode['id']] = idx
             widget = EpisodeWidget(episode, parent=self._main_window)
-            # widget.play.connect(self.onPlayFromEpisode)
+            widget.play.connect(self.onPlayFromEpisodeAll)
             self._all_episodes_layout.addWidget(widget)
 
             hline = HLine()
@@ -406,6 +407,13 @@ class ShowDetails(QtWidgets.QWidget):
         start_idx = self._episode_idx[episode['id']]
         uris = []
         for ep in self._show['episodes']['items'][start_idx:8]:
+            uris.append(ep['uri'])
+        self._main_window.startPlayback(uris)
+
+    def onPlayFromEpisodeAll(self, episode):
+        start_idx = self._all_episode_idx[episode['id']]
+        uris = []
+        for ep in self._show['episodes']['items'][start_idx:]:
             uris.append(ep['uri'])
         self._main_window.startPlayback(uris)
 
