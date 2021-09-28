@@ -359,6 +359,7 @@ class MainWindow(QtWidgets.QMainWindow):
         active_page = self._stacked_layout.currentIndex()
         self._settings.setValue("active_page", active_page)
         self._settings.setValue("active_show_id", self._show.id)
+        self._settings.setValue("active_show_page", self._show.active_page)
         self._settings.setValue("active_episode_id", self._episode_detail.id)
         self._settings.setValue("history", self._history)
         self._settings.endGroup()
@@ -429,6 +430,9 @@ class MainWindow(QtWidgets.QMainWindow):
             show_id = self._settings.value("active_show_id")
             if show_id is not None:
                 self._show.fill(show_id)
+            active_show_page = self._settings.value("active_show_page")
+            if active_show_page is not None:
+                self._show.setActivePage(active_show_page)
             act_tab = self._stacked_layout.widget(self._history[0])
         elif self._stacked_layout.currentWidget() == self._episode_detail:
             episode_id = self._settings.value("active_episode_id")

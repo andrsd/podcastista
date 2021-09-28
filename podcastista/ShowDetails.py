@@ -261,6 +261,13 @@ class ShowDetails(QtWidgets.QWidget):
         else:
             return self._show['id']
 
+    @property
+    def active_page(self):
+        return self._stacked_widget.currentIndex()
+
+    def setActivePage(self, index):
+        self._stacked_widget.setCurrentIndex(index)
+
     def fill(self, show_id):
         self._show = self._main_window.spotify.show(show_id)
 
