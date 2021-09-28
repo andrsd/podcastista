@@ -21,7 +21,6 @@ class ShowDetails(QtWidgets.QWidget):
         super().__init__()
         self._main_window = parent
         self._show = None
-        self._episode_idx = {}
 
         # top section
         self._back = BackButton()
@@ -297,9 +296,7 @@ class ShowDetails(QtWidgets.QWidget):
             text = "\u25B6  Resume"
         self._play_latest.setText(text)
 
-        self._episode_idx = {}
-        for idx, episode in enumerate(self._show['episodes']['items'][0:8]):
-            self._episode_idx[episode['id']] = idx
+        for episode in self._show['episodes']['items'][0:8]:
             widget = EpisodeWidget(episode, parent=self._main_window)
             widget.play.connect(self.onPlayFromEpisode)
             self._episodes_layout.addWidget(widget)
@@ -328,9 +325,7 @@ class ShowDetails(QtWidgets.QWidget):
         self._play_latest.setEnabled(True)
 
         # fill episode list
-        self._all_episode_idx = {}
-        for idx, episode in enumerate(self._show['episodes']['items']):
-            self._all_episode_idx[episode['id']] = idx
+        for episode in self._show['episodes']['items']:
             widget = EpisodeWidget(episode, parent=self._main_window)
             widget.play.connect(self.onPlayFromEpisodeAll)
             self._all_episodes_layout.addWidget(widget)
@@ -403,18 +398,30 @@ class ShowDetails(QtWidgets.QWidget):
             episode = self._show['episodes']['items'][0]
             self._main_window.startPlayback([episode['uri']])
 
-    def onPlayFromEpisode(self, episode):
-        start_idx = self._episode_idx[episode['id']]
+    def _getEpisodesFromId(self, episodes, id):
+        """
+        Find episode with 'id' and return all following episode URIs
+        from the 'episodes' list including the one with 'id'
+        """
+        adding = False
         uris = []
-        for ep in self._show['episodes']['items'][start_idx:8]:
-            uris.append(ep['uri'])
+        for ep in episodes:
+            if ep['id'] == id:
+                adding = True
+            if adding:
+                uris.append(ep['uri'])
+        return uris
+
+    def onPlayFromEpisode(self, episode):
+        uris = self._getEpisodesFromId(
+            self._show['episodes']['items'][0:8],
+            episode['id'])
         self._main_window.startPlayback(uris)
 
     def onPlayFromEpisodeAll(self, episode):
-        start_idx = self._all_episode_idx[episode['id']]
-        uris = []
-        for ep in self._show['episodes']['items'][start_idx:]:
-            uris.append(ep['uri'])
+        uris = self._getEpisodesFromId(
+            self._show['episodes']['items'],
+            episode['id'])
         self._main_window.startPlayback(uris)
 
     def onSeeAllEpisodes(self):
