@@ -1,6 +1,7 @@
 from PyQt5 import QtWidgets, QtCore, QtGui
 from podcastista.assets import Assets
 from podcastista import utils
+from podcastista.VolumeButton import VolumeButton
 
 
 class Player(QtWidgets.QLabel):
@@ -166,10 +167,7 @@ class Player(QtWidgets.QLabel):
 
         output_layout.addSpacing(4)
 
-        self._mute_button = QtWidgets.QPushButton("M")
-        self._mute_button.setFlat(True)
-        self._mute_button.setCheckable(True)
-        self._mute_button.setFixedSize(QtCore.QSize(16, 16))
+        self._mute_button = VolumeButton()
         self._mute_button.clicked.connect(self.onMute)
         self._mute_button.setEnabled(False)
         output_layout.addWidget(self._mute_button)
@@ -249,6 +247,7 @@ class Player(QtWidgets.QLabel):
             self._mute_button.setChecked(True)
         else:
             self._mute_button.setChecked(False)
+        self._mute_button.updateIcon()
 
     def updateCurrentlyPlaying(self):
         """

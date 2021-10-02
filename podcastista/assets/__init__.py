@@ -57,6 +57,10 @@ class Assets:
             os.path.join(icons_dir, "ep-dots-normal.svg"))
         self.ep_dots_selected_icon = QtGui.QIcon(
             os.path.join(icons_dir, "ep-dots-selected.svg"))
+        self.volume_on_icon = QtGui.QIcon(
+            os.path.join(icons_dir, "volume-on.svg"))
+        self.volume_muted_icon = QtGui.QIcon(
+            os.path.join(icons_dir, "volume-muted.svg"))
 
         self.devices_icon = QtGui.QIcon(os.path.join(icons_dir, "devices.svg"))
 
