@@ -1,2 +1,2 @@
 -r test.txt
-pyinstaller>=4.5
+py2app>=0.24
