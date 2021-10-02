@@ -340,6 +340,8 @@ class ShowDetails(QtWidgets.QWidget):
     def onBack(self):
         if self._stacked_widget.currentWidget() == self._list_widget:
             self._stacked_widget.setCurrentWidget(self._info_widget)
+            val = self._info_widget.verticalScrollBar().value()
+            self._updateShowLabel(val)
         else:
             self._main_window.onBack()
 
@@ -368,6 +370,9 @@ class ShowDetails(QtWidgets.QWidget):
         self.updateFollowState()
 
     def onVertScroll(self, value):
+        self._updateShowLabel(value)
+
+    def _updateShowLabel(self, value):
         LO_VALUE = 80
         HI_VALUE = 100
 
@@ -426,3 +431,5 @@ class ShowDetails(QtWidgets.QWidget):
 
     def onSeeAllEpisodes(self):
         self._stacked_widget.setCurrentWidget(self._list_widget)
+        val = self._list_widget.verticalScrollBar().value()
+        self._updateShowLabel(val)
