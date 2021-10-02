@@ -22,12 +22,14 @@ if platform.system() == 'Darwin':
         app=[main_script],
         data_files=[
             ('icons', glob(assets_dir + '/icons/*.svg')),
+            ('icons', glob(assets_dir + '/icons/*.png')),
             ('', ['podcastista/.env'])
         ],
         options={
             'py2app': {
                 'argv_emulation': False,
-                'plist': PLIST_INFO
+                'plist': PLIST_INFO,
+                'iconfile': 'icon.icns'
             }
         }
     )

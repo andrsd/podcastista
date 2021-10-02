@@ -7,6 +7,7 @@ import signal
 from podcastista import consts
 from podcastista import colors
 from podcastista import server
+from podcastista.assets import Assets
 
 from PyQt5 import QtWidgets, QtCore
 from podcastista.MainWindow import MainWindow
@@ -47,6 +48,7 @@ def main():
     palette = colors.create_palette()
     qapp.setPalette(palette)
     qapp.setQuitOnLastWindowClosed(False)
+    qapp.setWindowIcon(Assets().app_icon)
 
     server_thread = server.ServerThread()
     server_thread.start()

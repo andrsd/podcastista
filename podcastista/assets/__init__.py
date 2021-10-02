@@ -42,6 +42,8 @@ class Assets:
             path = os.path.dirname(__file__)
 
         icons_dir = os.path.join(path, 'icons')
+        self.app_icon = QtGui.QIcon(os.path.join(icons_dir, "podcastista.png"))
+
         self.prev_icon = QtGui.QIcon(os.path.join(icons_dir, "prev.svg"))
         self.next_icon = QtGui.QIcon(os.path.join(icons_dir, "next.svg"))
         self.play_icon = QtGui.QIcon(os.path.join(icons_dir, "play.svg"))
