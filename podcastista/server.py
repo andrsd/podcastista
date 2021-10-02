@@ -1,6 +1,6 @@
 import os
-import sys
 import webbrowser
+import platform
 
 from flask import Flask, request, redirect
 from dotenv import load_dotenv
@@ -9,12 +9,13 @@ import spotipy
 import spotipy.util
 
 from PyQt5 import QtCore
-from pathlib import Path
+import pathlib
 
-if getattr(sys, 'frozen', False):
-    load_dotenv(dotenv_path=os.path.join(sys._MEIPASS, '.env'))
-else:
-    load_dotenv()
+path = os.path.dirname(__file__)
+if platform.system() == "Darwin":
+    path = os.environ.get('RESOURCEPATH', path)
+
+load_dotenv(dotenv_path=os.path.join(path, '.env'))
 
 SPOTIFY_CLIENT_ID = os.getenv('SPOTIFY_CLIENT_ID')
 SPOTIFY_CLIENT_SECRET = os.getenv('SPOTIFY_CLIENT_SECRET')
@@ -25,7 +26,7 @@ port = int(os.environ.get("PODCASTISTA_PORT", 9183))
 
 app = Flask(__name__)
 
-caches_folder = os.path.join(str(Path.home()), '.cache', 'podcastista')
+caches_folder = os.path.join(str(pathlib.Path.home()), '.cache', 'podcastista')
 if not os.path.exists(caches_folder):
     os.makedirs(caches_folder)
 
