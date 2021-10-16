@@ -17,10 +17,10 @@ syntax-check check-syntax:
 	@flake8 $(SRC) tests setup.py
 
 test:
-	@pytest .
+	@PYTEST_QT_API=pyqt5 pytest .
 
 coverage:
-	@coverage run --source=$(SRC) -m pytest
+	@PYTEST_QT_API=pyqt5 coverage run --source=$(SRC) -m pytest
 	@coverage html
 
 icon.icns:
