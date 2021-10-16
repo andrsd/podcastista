@@ -4,6 +4,7 @@
 .config.yml
 *.egg-info/
 .env
+icon.icns
 
 .eggs/*
 venv/*

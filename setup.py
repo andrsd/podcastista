@@ -54,7 +54,7 @@ setup(
     license='LICENSE',
     description=consts.DESCRIPTION,
     install_requires=[
-        'PyQt5==5.15.2',
+        'PyQt5==5.13.1',
         'pyaml==20.4.0',
         'spotipy==2.19.0',
         'Flask==2.0.1',
