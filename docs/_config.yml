@@ -22,7 +22,7 @@ title: Podcastista
 subtitle: Listen to your podcasts on Spotify like a person
 email: andrsd@gmail.com
 description: >- # this means to ignore newlines until "baseurl:"
-  A small application that fills your spotify queue with concert music.
+  A small application to listen to podcasts on Spotify.
 baseurl: "/podcastista" # the subpath of your site, e.g. /blog
 url: "" # the base hostname & protocol for your site, e.g. http://example.com
 github_username:  andrsd
