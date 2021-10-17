@@ -2,6 +2,7 @@
 source=podcastista
 omit =
     podcastista/__main__.py
+    podcastista/consts.py
     podcastista/server.py
 
 [report]
